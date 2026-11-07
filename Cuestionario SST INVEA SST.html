@@ -1,0 +1,3117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="tool">
+  <meta name="design-style" content="handbook">
+  <title>Evaluación SST - Peligros y Riesgos en Generación Solar | INVEA S.A.S.</title>
+
+  <!-- Typography: Public Sans (Handbook Style) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+
+  <style>
+    /* ==========================================================================
+       DESIGN TOKENS - HANDBOOK STYLE (Classic Light)
+       ========================================================================== */
+    :root {
+      color-scheme: light;
+
+      /* Page & Surfaces */
+      --background: #ffffff;
+      --surface-container-low: #f3f2f1;
+      --surface-container: #e8e7e5;
+      --surface-container-high: #dbdad9;
+
+      /* Ink */
+      --on-surface: #0b0c0c;
+      --on-surface-variant: #505a5f;
+
+      /* Rules & Borders */
+      --outline: #0b0c0c;
+      --outline-variant: #b1b4b6;
+
+      /* Accents */
+      --primary: #162e51;
+      --on-primary: #ffffff;
+      --primary-container: #d2e2f1;
+      --on-primary-container: #0c2d4a;
+      --secondary: #4c2c92;
+      --tertiary: #1a569e;
+      --error: #d4351c;
+      --on-error: #ffffff;
+      --positive: #00703c;
+      --warning: #a84200;
+      --warning-bg: #fff3e6;
+
+      /* Data & Series */
+      --data-1: #1a569e;
+      --data-2: #c75a0a;
+      --data-3: #28a197;
+      --data-4: #4c2c92;
+      --data-context: #b1b4b6;
+
+      /* Fonts */
+      --font-headline: 'Public Sans', sans-serif;
+      --font-body: 'Public Sans', sans-serif;
+      --font-label: 'Public Sans', sans-serif;
+
+      /* Shape - Handbook is square */
+      --rounded: 0px;
+      --rounded-lg: 0px;
+      --rounded-full: 0px;
+
+      /* Handbook Signature Treatments */
+      --top-index-rule: 6px solid var(--primary);
+      --inset-rule: 5px solid var(--tertiary);
+      --button-ground: 0 3px 0 #091526;
+      --button-ground-secondary: 0 3px 0 #858686;
+      --focus-yellow: #ffdd00;
+      --focus: #162e51;
+
+      /* Spacing Scale (4pt base) */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+      --space-3xl: 6rem;
+
+      /* Tool Type Scale */
+      --display-size: clamp(1.6rem, 1.3rem + 1.2vw, 2.25rem);
+      --headline-size: clamp(1.2rem, 1.05rem + 0.5vw, 1.5rem);
+      --subhead-size: clamp(1rem, 0.95rem + 0.25vw, 1.2rem);
+      --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+      --label-size: 0.75rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 200ms;
+      --dur-long: 400ms;
+    }
+
+    /* Base Reset */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.5;
+      overflow-x: clip;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--focus-yellow);
+      outline-offset: 2px;
+      box-shadow: inset 0 0 0 2px var(--on-surface);
+    }
+
+    /* Layout & Container */
+    .app-wrapper {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 var(--space-md) var(--space-3xl);
+    }
+
+    /* Top Handbook Banner */
+    .top-crown {
+      border-top: var(--top-index-rule);
+      background-color: var(--background);
+      border-bottom: 1px solid var(--outline-variant);
+      padding: var(--space-sm) 0;
+      margin-bottom: var(--space-lg);
+    }
+
+    .crown-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+
+    .org-tag {
+      font-family: var(--font-label);
+      font-weight: 800;
+      font-size: var(--label-size);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .doc-meta {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      color: var(--on-surface-variant);
+    }
+
+    /* Header block */
+    .app-header {
+      margin-bottom: var(--space-xl);
+    }
+
+    .main-title {
+      font-family: var(--font-headline);
+      font-size: var(--display-size);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--on-surface);
+      margin-bottom: var(--space-xs);
+    }
+
+    .main-subtitle {
+      font-size: var(--subhead-size);
+      color: var(--on-surface-variant);
+      max-width: 75ch;
+      line-height: 1.4;
+    }
+
+    /* Inset Callout (Handbook Signature) */
+    .callout-box {
+      border-left: var(--inset-rule);
+      background-color: var(--surface-container-low);
+      padding: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .callout-box p {
+      font-size: var(--body-size);
+      color: var(--on-surface);
+      margin-bottom: var(--space-xs);
+    }
+
+    .callout-box p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Tabs Navigation */
+    .tabs-nav {
+      display: flex;
+      border-bottom: 2px solid var(--on-surface);
+      gap: var(--space-xs);
+      margin-bottom: var(--space-xl);
+      overflow-x: auto;
+      padding-bottom: 0;
+      scrollbar-width: thin;
+    }
+
+    .tab-btn {
+      appearance: none;
+      border: 1px solid var(--outline-variant);
+      border-bottom: none;
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 0.875rem;
+      padding: var(--space-sm) var(--space-md);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      white-space: nowrap;
+      min-height: 44px;
+      transition: background var(--dur-micro) var(--ease-out);
+    }
+
+    .tab-btn:hover {
+      background: var(--surface-container);
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+      margin-bottom: -2px;
+      padding-bottom: calc(var(--space-sm) + 2px);
+    }
+
+    /* Tab Panels */
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* Worker Credentials Section */
+    .card-panel {
+      border: 1px solid var(--outline-variant);
+      background: var(--background);
+      padding: var(--space-lg);
+      margin-bottom: var(--space-xl);
+    }
+
+    .section-title-bar {
+      border-bottom: 2px solid var(--on-surface);
+      padding-bottom: var(--space-xs);
+      margin-bottom: var(--space-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+    }
+
+    .section-title {
+      font-family: var(--font-headline);
+      font-size: var(--headline-size);
+      font-weight: 800;
+      color: var(--on-surface);
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .section-badge {
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: var(--label-size);
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      padding: 0.2rem 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* Form Fields Grid */
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .field-label {
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: 0.875rem;
+      color: var(--on-surface);
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .field-hint {
+      font-size: 0.75rem;
+      color: var(--on-surface-variant);
+      margin-top: -0.2rem;
+    }
+
+    .text-input, .select-input {
+      width: 100%;
+      min-height: 44px;
+      padding: var(--space-sm);
+      border: 2px solid var(--outline);
+      background: var(--background);
+      font-family: var(--font-body);
+      font-size: 0.9375rem;
+      color: var(--on-surface);
+      border-radius: var(--rounded);
+    }
+
+    .text-input:focus, .select-input:focus {
+      outline: 3px solid var(--focus-yellow);
+      outline-offset: 1px;
+    }
+
+    .text-input[readonly] {
+      background: var(--surface-container-low);
+      border-color: var(--outline-variant);
+      color: var(--on-surface-variant);
+      cursor: not-allowed;
+    }
+
+    /* Coordinator Fixed Information Card */
+    .coordinator-panel {
+      background: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      border-left: 5px solid var(--primary);
+      padding: var(--space-md);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    .coordinator-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .coord-title {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--primary);
+    }
+
+    .coord-name {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--on-surface);
+    }
+
+    .coord-meta {
+      font-size: 0.85rem;
+      color: var(--on-surface-variant);
+    }
+
+    .verified-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: var(--primary);
+      color: #ffffff;
+      padding: 0.35rem 0.65rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    /* Progress Tracker Banner */
+    .progress-bar-container {
+      background: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      padding: var(--space-md);
+      margin-bottom: var(--space-lg);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-xs);
+      font-family: var(--font-label);
+      font-size: 0.8125rem;
+      font-weight: 700;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 12px;
+      background: var(--surface-container-high);
+      border: 1px solid var(--outline);
+      position: relative;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      width: 0%;
+      transition: width var(--dur-short) var(--ease-out);
+    }
+
+    .filter-pills {
+      display: flex;
+      gap: var(--space-xs);
+      flex-wrap: wrap;
+      margin-top: var(--space-sm);
+    }
+
+    .filter-btn {
+      appearance: none;
+      border: 1px solid var(--outline);
+      background: var(--background);
+      font-family: var(--font-label);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.25rem 0.55rem;
+      cursor: pointer;
+      min-height: 32px;
+    }
+
+    .filter-btn.active {
+      background: var(--on-surface);
+      color: #ffffff;
+      border-color: var(--on-surface);
+    }
+
+    /* Module Header */
+    .module-separator {
+      background: var(--primary);
+      color: #ffffff;
+      padding: var(--space-sm) var(--space-md);
+      margin: var(--space-xl) 0 var(--space-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+    }
+
+    .module-separator h3 {
+      font-family: var(--font-headline);
+      font-size: 1.05rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .module-norm-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 0.2rem 0.5rem;
+    }
+
+    /* Question Card - Handbook Step Style */
+    .question-card {
+      border: 2px solid var(--outline);
+      background: var(--background);
+      margin-bottom: var(--space-lg);
+      padding: var(--space-lg);
+      position: relative;
+      transition: border-color var(--dur-micro) var(--ease-out);
+    }
+
+    .question-card.answered {
+      border-color: var(--tertiary);
+    }
+
+    .question-card.correct-review {
+      border-color: var(--positive);
+      background: #f4faf6;
+    }
+
+    .question-card.incorrect-review {
+      border-color: var(--error);
+      background: #fdf5f4;
+    }
+
+    .question-header {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .step-badge {
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      background: var(--primary);
+      color: #ffffff;
+      font-family: var(--font-headline);
+      font-size: 1rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #000;
+    }
+
+    .question-meta-group {
+      flex: 1;
+    }
+
+    .question-tag {
+      display: inline-block;
+      font-family: var(--font-label);
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--tertiary);
+      margin-bottom: 0.2rem;
+    }
+
+    .question-title {
+      font-family: var(--font-headline);
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--on-surface);
+    }
+
+    /* Options Stack */
+    .options-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-md);
+    }
+
+    .option-label {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      border: 1px solid var(--outline-variant);
+      background: var(--surface-container-low);
+      cursor: pointer;
+      min-height: 48px;
+      font-size: 0.9375rem;
+      transition: background var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+
+    .option-label:hover {
+      background: var(--surface-container);
+      border-color: var(--on-surface);
+    }
+
+    .option-radio {
+      appearance: none;
+      margin-top: 0.25rem;
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      border: 2px solid var(--outline);
+      border-radius: 50%;
+      background: var(--background);
+      cursor: pointer;
+      display: grid;
+      place-content: center;
+    }
+
+    .option-radio::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--primary);
+      transform: scale(0);
+      transition: transform var(--dur-micro) var(--ease-out);
+    }
+
+    .option-radio:checked::before {
+      transform: scale(1);
+    }
+
+    .option-label.selected {
+      background: var(--primary-container);
+      border-color: var(--tertiary);
+      color: var(--on-primary-container);
+      font-weight: 600;
+    }
+
+    .option-letter {
+      font-family: var(--font-label);
+      font-weight: 800;
+      color: var(--primary);
+      min-width: 1.2rem;
+    }
+
+    .option-text {
+      flex: 1;
+      line-height: 1.4;
+    }
+
+    /* Explanation & Feedback Block */
+    .feedback-box {
+      display: none;
+      border-left: 5px solid var(--tertiary);
+      background: var(--background);
+      border-top: 1px solid var(--outline-variant);
+      border-right: 1px solid var(--outline-variant);
+      border-bottom: 1px solid var(--outline-variant);
+      padding: var(--space-md);
+      margin-top: var(--space-sm);
+    }
+
+    .feedback-box.visible {
+      display: block;
+    }
+
+    .feedback-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-family: var(--font-label);
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 0.2rem 0.5rem;
+      margin-bottom: var(--space-xs);
+    }
+
+    .feedback-badge.correct {
+      background: var(--positive);
+      color: #ffffff;
+    }
+
+    .feedback-badge.incorrect {
+      background: var(--error);
+      color: #ffffff;
+    }
+
+    .feedback-norm {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .feedback-text {
+      font-size: 0.875rem;
+      line-height: 1.45;
+      color: var(--on-surface);
+    }
+
+    /* Action Buttons in Handbook Style */
+    .actions-bar {
+      display: flex;
+      gap: var(--space-md);
+      flex-wrap: wrap;
+      align-items: center;
+      margin: var(--space-xl) 0;
+      padding: var(--space-lg);
+      background: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+    }
+
+    .btn-primary {
+      appearance: none;
+      border: none;
+      background: var(--primary);
+      color: var(--on-primary);
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: 1rem;
+      padding: var(--space-sm) var(--space-lg);
+      cursor: pointer;
+      box-shadow: var(--button-ground);
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      transition: transform var(--dur-micro) var(--ease-out);
+    }
+
+    .btn-primary:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #091526;
+    }
+
+    .btn-secondary {
+      appearance: none;
+      border: 2px solid var(--outline);
+      background: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 0.9375rem;
+      padding: var(--space-sm) var(--space-md);
+      cursor: pointer;
+      box-shadow: var(--button-ground-secondary);
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+    }
+
+    .btn-secondary:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0 #858686;
+    }
+
+    /* Results Dashboard */
+    .results-hero {
+      border: 3px solid var(--outline);
+      padding: var(--space-xl);
+      margin-bottom: var(--space-xl);
+      background: var(--surface-container-low);
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      gap: var(--space-xl);
+      align-items: center;
+    }
+
+    .score-circle-box {
+      text-align: center;
+      padding: var(--space-md);
+      border: 2px solid var(--outline);
+      background: var(--background);
+    }
+
+    .score-big {
+      font-family: var(--font-headline);
+      font-size: 3.5rem;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--primary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .score-denom {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--on-surface-variant);
+      margin-bottom: var(--space-xs);
+    }
+
+    .score-state-badge {
+      display: inline-block;
+      padding: 0.35rem 0.75rem;
+      font-weight: 800;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .score-state-badge.passed {
+      background: var(--positive);
+      color: #ffffff;
+    }
+
+    .score-state-badge.failed {
+      background: var(--error);
+      color: #ffffff;
+    }
+
+    .results-details {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .results-details h3 {
+      font-family: var(--font-headline);
+      font-size: var(--headline-size);
+      font-weight: 800;
+    }
+
+    .modules-breakdown {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-md);
+      margin: var(--space-md) 0;
+    }
+
+    .mod-stat-card {
+      border: 1px solid var(--outline-variant);
+      background: var(--background);
+      padding: var(--space-md);
+    }
+
+    .mod-stat-title {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--on-surface-variant);
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+
+    .mod-stat-score {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--on-surface);
+      font-variant-numeric: tabular-nums;
+      margin-bottom: var(--space-xs);
+    }
+
+    .mod-mini-track {
+      width: 100%;
+      height: 6px;
+      background: var(--surface-container-high);
+    }
+
+    .mod-mini-fill {
+      height: 100%;
+      background: var(--tertiary);
+    }
+
+    /* GTC 45 Calculator Panel */
+    .calculator-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: var(--space-xl);
+      margin-top: var(--space-md);
+    }
+
+    .calc-inputs-pane {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .calc-output-pane {
+      border: 2px solid var(--outline);
+      background: var(--surface-container-low);
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .calc-segment {
+      border: 1px solid var(--outline-variant);
+      padding: var(--space-md);
+      background: var(--background);
+    }
+
+    .calc-segment-title {
+      font-family: var(--font-label);
+      font-weight: 800;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: var(--space-xs);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .button-selector-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: var(--space-xs);
+      margin-top: var(--space-xs);
+    }
+
+    .calc-choice-btn {
+      appearance: none;
+      border: 1px solid var(--outline);
+      background: var(--surface-container-low);
+      padding: var(--space-sm);
+      text-align: center;
+      cursor: pointer;
+      min-height: 44px;
+      font-size: 0.85rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: background var(--dur-micro) var(--ease-out);
+    }
+
+    .calc-choice-btn strong {
+      font-size: 1rem;
+      font-weight: 800;
+    }
+
+    .calc-choice-btn.selected {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+      margin-bottom: var(--space-md);
+    }
+
+    .preset-btn {
+      appearance: none;
+      border: 1px solid var(--tertiary);
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: 0.75rem;
+      padding: 0.35rem 0.65rem;
+      cursor: pointer;
+      min-height: 36px;
+    }
+
+    .preset-btn:hover {
+      background: var(--tertiary);
+      color: #ffffff;
+    }
+
+    .formula-banner {
+      background: var(--surface-container-high);
+      padding: var(--space-sm) var(--space-md);
+      font-family: monospace;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border-left: 3px solid var(--on-surface);
+      margin-bottom: var(--space-md);
+    }
+
+    .result-kpi-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-sm);
+      margin-bottom: var(--space-md);
+    }
+
+    .kpi-tile {
+      background: var(--background);
+      border: 1px solid var(--outline-variant);
+      padding: var(--space-sm);
+      text-align: center;
+    }
+
+    .kpi-sub {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--on-surface-variant);
+      text-transform: uppercase;
+    }
+
+    .kpi-val {
+      font-size: 1.75rem;
+      font-weight: 900;
+      color: var(--on-surface);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .nr-hero-box {
+      border: 3px solid var(--outline);
+      background: var(--background);
+      padding: var(--space-md);
+      text-align: center;
+      margin-bottom: var(--space-md);
+    }
+
+    .nr-level-badge {
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      font-size: 1.1rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-xs);
+    }
+
+    .nr-acceptability {
+      font-size: 0.95rem;
+      font-weight: 800;
+      margin-bottom: var(--space-xs);
+    }
+
+    .nr-desc {
+      font-size: 0.8125rem;
+      line-height: 1.4;
+      color: var(--on-surface-variant);
+    }
+
+    /* 5 Golden Rules Grid */
+    .rules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: var(--space-md);
+      margin-top: var(--space-md);
+    }
+
+    .rule-card {
+      border: 2px solid var(--outline);
+      background: var(--background);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .rule-num {
+      width: 32px;
+      height: 32px;
+      background: var(--primary);
+      color: #fff;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      margin-bottom: var(--space-xs);
+    }
+
+    .rule-title {
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--on-surface);
+    }
+
+    .rule-body {
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+      line-height: 1.4;
+    }
+
+    /* Official Certificate Format (Acta de Evaluación) */
+    .certificate-sheet {
+      background: #ffffff;
+      border: 3px solid var(--primary);
+      padding: var(--space-xl);
+      max-width: 900px;
+      margin: 0 auto;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+      position: relative;
+    }
+
+    .cert-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--primary);
+      padding-bottom: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .cert-logo-text {
+      font-family: var(--font-headline);
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--primary);
+      letter-spacing: 0.05em;
+    }
+
+    .cert-logo-sub {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--on-surface-variant);
+      text-transform: uppercase;
+    }
+
+    .cert-code-box {
+      text-align: right;
+      font-family: monospace;
+      font-size: 0.75rem;
+      line-height: 1.4;
+      color: var(--on-surface-variant);
+    }
+
+    .cert-title-block {
+      text-align: center;
+      margin-bottom: var(--space-lg);
+    }
+
+    .cert-doc-type {
+      font-family: var(--font-label);
+      font-size: 0.8125rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: var(--tertiary);
+      text-transform: uppercase;
+      margin-bottom: var(--space-xs);
+    }
+
+    .cert-main-heading {
+      font-family: var(--font-headline);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--on-surface);
+      line-height: 1.25;
+    }
+
+    .cert-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: var(--space-lg);
+      font-size: 0.875rem;
+    }
+
+    .cert-table th, .cert-table td {
+      border: 1px solid var(--outline-variant);
+      padding: var(--space-sm) var(--space-md);
+      text-align: left;
+    }
+
+    .cert-table th {
+      background: var(--surface-container-low);
+      font-weight: 800;
+      font-family: var(--font-label);
+      color: var(--primary);
+    }
+
+    .cert-declaration {
+      background: var(--surface-container-low);
+      border-left: 4px solid var(--primary);
+      padding: var(--space-md);
+      font-size: 0.8125rem;
+      line-height: 1.45;
+      margin-bottom: var(--space-xl);
+      color: var(--on-surface);
+    }
+
+    .signatures-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-2xl);
+      margin-top: var(--space-2xl);
+      padding-top: var(--space-md);
+    }
+
+    .signature-box {
+      border-top: 1.5px solid var(--on-surface);
+      text-align: center;
+      padding-top: var(--space-sm);
+    }
+
+    .sig-name {
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--on-surface);
+    }
+
+    .sig-role {
+      font-size: 0.8125rem;
+      color: var(--on-surface-variant);
+    }
+
+    .sig-id {
+      font-size: 0.75rem;
+      font-family: monospace;
+      color: var(--tertiary);
+      font-weight: 700;
+    }
+
+    .sig-stamp-mock {
+      display: inline-block;
+      margin-bottom: var(--space-xs);
+      padding: 0.25rem 0.75rem;
+      border: 1.5px dashed var(--tertiary);
+      color: var(--tertiary);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    /* Print-specific media query */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        font-size: 11pt !important;
+      }
+
+      .top-crown,
+      .tabs-nav,
+      .progress-bar-container,
+      .actions-bar,
+      .filter-pills,
+      .calc-inputs-pane,
+      .preset-chips,
+      .print-hide {
+        display: none !important;
+      }
+
+      .app-wrapper {
+        max-width: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      .tab-panel {
+        display: none !important;
+      }
+
+      #tab-cert.tab-panel {
+        display: block !important;
+      }
+
+      .certificate-sheet {
+        box-shadow: none !important;
+        border: 2px solid #000 !important;
+        max-width: 100% !important;
+        padding: 1.5cm !important;
+        margin: 0 !important;
+        page-break-after: avoid;
+      }
+
+      .cert-header {
+        border-bottom: 2px solid #000 !important;
+      }
+
+      .cert-table th {
+        background: #f0f0f0 !important;
+        color: #000 !important;
+      }
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 640px) {
+      .app-wrapper {
+        padding: 0 var(--space-sm) var(--space-xl);
+      }
+
+      .form-grid-2, .form-grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .calculator-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .results-hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .signatures-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-xl);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Crown Rule & Identification Header -->
+  <header class="top-crown">
+    <div class="app-wrapper">
+      <div class="crown-row">
+        <div class="org-tag">
+          <i data-lucide="shield-alert" style="width:16px;height:16px;"></i>
+          <span>INVEA S.A.S. — NIT 900519295-1</span>
+        </div>
+        <div class="doc-meta">
+          <span>SG-SST • Generación Solar • GTC 45 / RETIE 2024 / Res. 4272</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-wrapper">
+
+    <!-- Header Block -->
+    <section class="app-header">
+      <h1 class="main-title">Evaluación Técnica de Peligros y Riesgos SST</h1>
+      <p class="main-subtitle">
+        Instrumento interactivo de validación de competencias para operaciones en parques solares fotovoltaicos, trabajos con tensión y maniobras en alturas. Basado en la metodología ICONTEC GTC 45:2012, RETIE 2024 (Art. 1.5.1.4) y la Resolución 4272 de 2021.
+      </p>
+    </section>
+
+    <!-- Inset Handbook Callout -->
+    <aside class="callout-box" aria-label="Aviso normativo obligatorio">
+      <p><strong>Aviso de Cumplimiento Legal:</strong> Esta evaluación constituye evidencia auditable dentro del Sistema de Gestión de la Seguridad y Salud en el Trabajo (Decreto 1072 de 2015). El umbral de aprobación requerido para habilitación en campo es del <strong>80% (12/15)</strong>.</p>
+      <p style="font-size: 0.8125rem; color: var(--on-surface-variant);">
+        Coordinación SGSST Designada: <strong>Jhoan Alexander Florez Beltran</strong> — Profesional en Admon SST, Licencia 2026060907804.
+      </p>
+    </aside>
+
+    <!-- Main Navigation Tabs -->
+    <nav class="tabs-nav" role="tablist" aria-label="Secciones del instrumento SST">
+      <button class="tab-btn active" role="tab" id="btn-tab-quiz" aria-selected="true" aria-controls="tab-quiz" onclick="switchMainTab('tab-quiz')">
+        <i data-lucide="clipboard-check" style="width:18px;height:18px;"></i>
+        <span>1. Cuestionario & Evaluación</span>
+      </button>
+      <button class="tab-btn" role="tab" id="btn-tab-calc" aria-selected="false" aria-controls="tab-calc" onclick="switchMainTab('tab-calc')">
+        <i data-lucide="calculator" style="width:18px;height:18px;"></i>
+        <span>2. Matriz GTC 45 (Simulador)</span>
+      </button>
+      <button class="tab-btn" role="tab" id="btn-tab-retie" aria-selected="false" aria-controls="tab-retie" onclick="switchMainTab('tab-retie')">
+        <i data-lucide="zap" style="width:18px;height:18px;"></i>
+        <span>3. Guía RETIE & 5 Reglas</span>
+      </button>
+      <button class="tab-btn" role="tab" id="btn-tab-cert" aria-selected="false" aria-controls="tab-cert" onclick="switchMainTab('tab-cert')">
+        <i data-lucide="award" style="width:18px;height:18px;"></i>
+        <span>4. Acta Oficial & Certificado</span>
+      </button>
+    </nav>
+
+    <!-- TAB 1: CUESTIONARIO Y FORMULARIO -->
+    <div id="tab-quiz" class="tab-panel active" role="tabpanel" aria-labelledby="btn-tab-quiz">
+
+      <!-- Worker Credentials Card -->
+      <section class="card-panel">
+        <div class="section-title-bar">
+          <h2 class="section-title">
+            <i data-lucide="user-check" style="width:22px;height:22px;color:var(--tertiary);"></i>
+            <span>Datos del Evaluado (Trabajador)</span>
+          </h2>
+          <span class="section-badge">Registro Requerido</span>
+        </div>
+
+        <form id="worker-form" onsubmit="event.preventDefault();">
+          <div class="form-grid-3">
+            <div class="field-group">
+              <label for="worker-name" class="field-label">Nombre Completo *</label>
+              <input type="text" id="worker-name" class="text-input" placeholder="Ej: Carlos Eduardo Mendoza Gómez" value="Carlos Eduardo Mendoza Gómez" oninput="saveAndSyncData()">
+              <span class="field-hint">Nombres y apellidos completos como figuran en cédula.</span>
+            </div>
+
+            <div class="field-group">
+              <label for="worker-id" class="field-label">Cédula de Ciudadanía (C.C.) *</label>
+              <input type="text" id="worker-id" class="text-input" placeholder="Ej: 1.098.765.432" value="1.098.765.432" oninput="saveAndSyncData()">
+              <span class="field-hint">Número de identificación tributaria o ciudadana.</span>
+            </div>
+
+            <div class="field-group">
+              <label for="worker-role" class="field-label">Cargo / Puesto en Planta *</label>
+              <select id="worker-role" class="select-input" onchange="saveAndSyncData()">
+                <option value="Técnico Electricista Solar Fotovoltaico" selected>Técnico Electricista Solar Fotovoltaico</option>
+                <option value="Instalador y Montador de Módulos Solares">Instalador y Montador de Módulos Solares</option>
+                <option value="Operario de Operación y Mantenimiento (O&M)">Operario de Operación y Mantenimiento (O&M)</option>
+                <option value="Supervisor de Seguridad y Salud en el Trabajo (SST)">Supervisor de Seguridad y Salud en el Trabajo (SST)</option>
+                <option value="Ingeniero Residente de Construcción Solar">Ingeniero Residente de Construcción Solar</option>
+                <option value="Auxiliar Técnico de Subestación">Auxiliar Técnico de Subestación</option>
+              </select>
+              <span class="field-hint">Perfil de riesgo ocupacional asignado.</span>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="field-group">
+              <label for="worker-project" class="field-label">Parque Solar / Proyecto Operativo *</label>
+              <input type="text" id="worker-project" class="text-input" placeholder="Ej: Parque Solar Fotovoltaico INVEA I - Fase Operación" value="Parque Solar Fotovoltaico INVEA I" oninput="saveAndSyncData()">
+              <span class="field-hint">Ubicación territorial o centro de trabajo.</span>
+            </div>
+
+            <div class="field-group">
+              <label for="eval-date" class="field-label">Fecha de Evaluación *</label>
+              <input type="date" id="eval-date" class="text-input" value="2026-11-04" onchange="saveAndSyncData()">
+              <span class="field-hint">Diligenciamiento oficial para auditoría anual.</span>
+            </div>
+          </div>
+        </form>
+
+        <!-- Coordinator Pre-configured Panel -->
+        <div class="coordinator-panel" style="margin-top: var(--space-md);">
+          <div class="coordinator-info">
+            <span class="coord-title">Responsable y Coordinador SGSST Predeterminado</span>
+            <span class="coord-name">Jhoan Alexander Florez Beltran</span>
+            <span class="coord-meta">Profesional en Admon SST • Registro y Licencia SST: <strong>2026060907804</strong></span>
+          </div>
+          <div class="verified-pill">
+            <i data-lucide="check-circle" style="width:14px;height:14px;"></i>
+            <span>Coordinador Asignado INVEA</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interactive Progress Header (Sticky) -->
+      <section class="progress-bar-container" aria-label="Progreso de respuestas">
+        <div class="progress-header">
+          <span id="progress-text">Progreso: 0 de 15 respondidas (0%)</span>
+          <span id="score-live-badge" style="color:var(--tertiary);">Modo: Formativo & Calificado</span>
+        </div>
+        <div class="progress-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+
+        <div class="filter-pills print-hide">
+          <button class="filter-btn active" id="flt-all" onclick="filterQuestions('all')">Todas (15)</button>
+          <button class="filter-btn" id="flt-gtc" onclick="filterQuestions('gtc')">Módulo 1: GTC 45</button>
+          <button class="filter-btn" id="flt-retie" onclick="filterQuestions('retie')">Módulo 2: Eléctrico RETIE</button>
+          <button class="filter-btn" id="flt-alturas" onclick="filterQuestions('alturas')">Módulo 3: Alturas Res. 4272</button>
+          <button class="filter-btn" id="flt-bio" onclick="filterQuestions('bio')">Módulo 4: Físico & Biomecánico</button>
+        </div>
+      </section>
+
+      <!-- RESULTS PANEL (Shown after evaluation or on demand) -->
+      <section id="results-panel" class="results-hero" style="display:none;" aria-live="polite">
+        <div class="score-circle-box">
+          <div class="score-denom">CALIFICACIÓN</div>
+          <div class="score-big" id="res-score-num">0%</div>
+          <div class="score-denom" id="res-correct-count">0 de 15 correctas</div>
+          <div class="score-state-badge" id="res-state-badge">PENDIENTE</div>
+        </div>
+
+        <div class="results-details">
+          <h3 id="res-headline">Evaluación Procesada</h3>
+          <p id="res-summary-text" style="font-size:0.9375rem; color:var(--on-surface-variant); margin-bottom:var(--space-sm);">
+            Revise a continuación el desglose técnico y las justificaciones de la normativa aplicable para cada punto.
+          </p>
+
+          <div class="modules-breakdown">
+            <div class="mod-stat-card">
+              <div class="mod-stat-title">GTC 45:2012</div>
+              <div class="mod-stat-score" id="stat-gtc">0 / 4</div>
+              <div class="mod-mini-track"><div class="mod-mini-fill" id="fill-stat-gtc" style="width:0%;"></div></div>
+            </div>
+            <div class="mod-stat-card">
+              <div class="mod-stat-title">Riesgo Eléctrico (RETIE)</div>
+              <div class="mod-stat-score" id="stat-retie">0 / 4</div>
+              <div class="mod-mini-track"><div class="mod-mini-fill" id="fill-stat-retie" style="width:0%;"></div></div>
+            </div>
+            <div class="mod-stat-card">
+              <div class="mod-stat-title">Trabajo Alturas (4272)</div>
+              <div class="mod-stat-score" id="stat-alturas">0 / 4</div>
+              <div class="mod-mini-track"><div class="mod-mini-fill" id="fill-stat-alturas" style="width:0%;"></div></div>
+            </div>
+            <div class="mod-stat-card">
+              <div class="mod-stat-title">Físico & Biomecánico</div>
+              <div class="mod-stat-score" id="stat-bio">0 / 3</div>
+              <div class="mod-mini-track"><div class="mod-mini-fill" id="fill-stat-bio" style="width:0%;"></div></div>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:var(--space-sm); flex-wrap:wrap; margin-top:var(--space-xs);">
+            <button class="btn-primary" onclick="switchMainTab('tab-cert')">
+              <i data-lucide="file-text" style="width:16px;height:16px;"></i>
+              <span>Ver Certificado y Acta Oficial</span>
+            </button>
+            <button class="btn-secondary" onclick="filterIncorrectQuestions()">
+              <i data-lucide="alert-triangle" style="width:16px;height:16px;"></i>
+              <span>Revisar Errores</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- QUESTIONS CONTAINER (Populated dynamically & statically styled) -->
+      <div id="questions-list"></div>
+
+      <!-- Action Footer for Assessment -->
+      <section class="actions-bar print-hide">
+        <button class="btn-primary" id="btn-submit-quiz" onclick="evaluateQuiz()">
+          <i data-lucide="check-check" style="width:18px;height:18px;"></i>
+          <span>Calificar Evaluación & Generar Resultados</span>
+        </button>
+
+        <button class="btn-secondary" onclick="toggleAllFeedbacks()">
+          <i data-lucide="eye" style="width:18px;height:18px;"></i>
+          <span id="btn-toggle-feedback-text">Ver Todas las Respuestas y Explicaciones</span>
+        </button>
+
+        <button class="btn-secondary" onclick="resetQuiz()">
+          <i data-lucide="rotate-ccw" style="width:18px;height:18px;"></i>
+          <span>Reiniciar Cuestionario</span>
+        </button>
+      </section>
+
+    </div>
+
+    <!-- TAB 2: SIMULADOR MATRIZ GTC 45 -->
+    <div id="tab-calc" class="tab-panel" role="tabpanel" aria-labelledby="btn-tab-calc">
+      <section class="card-panel">
+        <div class="section-title-bar">
+          <h2 class="section-title">
+            <i data-lucide="calculator" style="width:22px;height:22px;color:var(--tertiary);"></i>
+            <span>Simulador Interactivo de Matriz de Riesgos GTC 45:2012</span>
+          </h2>
+          <span class="section-badge">ICONTEC GTC 45</span>
+        </div>
+
+        <p style="margin-bottom: var(--space-md); font-size: 0.9375rem; color: var(--on-surface-variant);">
+          Esta herramienta calcula en tiempo real el Nivel de Probabilidad (<strong>NP = ND × NE</strong>) y el Nivel de Riesgo (<strong>NR = NP × NC</strong>) conforme a las tablas oficiales de la GTC 45:2012, determinando la aceptabilidad y controles aplicables a instalaciones solares de INVEA S.A.S.
+        </p>
+
+        <!-- Presets Buttons -->
+        <div class="field-label" style="margin-bottom:var(--space-xs);">Cargar Escenarios Frecuentes en Plantas Solares:</div>
+        <div class="preset-chips">
+          <button class="preset-btn" onclick="loadCalcPreset('cubierta')">1. Módulos en cubierta 4.5m sin línea de vida</button>
+          <button class="preset-btn" onclick="loadCalcPreset('strings')">2. Desconexión de strings DC bajo carga solar</button>
+          <button class="preset-btn" onclick="loadCalcPreset('inversor')">3. Carga manual de inversor de 40 kg en solitario</button>
+          <button class="preset-btn" onclick="loadCalcPreset('termografia')">4. Termografía con dron a distancia segura</button>
+          <button class="preset-btn" onclick="loadCalcPreset('limpieza')">5. Limpieza con pértiga y EPP completo</button>
+        </div>
+
+        <div class="formula-banner">
+          FÓRMULA NORMATIVA: NP = ND (Deficiencia) × NE (Exposición) | NR = NP × NC (Consecuencia)
+        </div>
+
+        <div class="calculator-layout">
+          <!-- Inputs Pane -->
+          <div class="calc-inputs-pane">
+
+            <!-- ND Selector -->
+            <div class="calc-segment">
+              <div class="calc-segment-title">
+                <span>1. Nivel de Deficiencia (ND)</span>
+                <span id="nd-val-disp" style="color:var(--tertiary); font-weight:900;">ND = 6 (Alto)</span>
+              </div>
+              <p style="font-size:0.75rem; color:var(--on-surface-variant); margin-bottom:var(--space-xs);">
+                Magnitud de los peligros encontrados y efectividad de medidas preventivas actuales:
+              </p>
+              <div class="button-selector-group" id="nd-buttons">
+                <button type="button" class="calc-choice-btn" data-val="10" onclick="setCalcParam('nd', 10)">
+                  <strong>10</strong>
+                  <span>Muy Alto</span>
+                </button>
+                <button type="button" class="calc-choice-btn selected" data-val="6" onclick="setCalcParam('nd', 6)">
+                  <strong>6</strong>
+                  <span>Alto</span>
+                </button>
+                <button type="button" class="calc-choice-btn" data-val="2" onclick="setCalcParam('nd', 2)">
+                  <strong>2</strong>
+                  <span>Medio</span>
+                </button>
+                <button type="button" class="calc-choice-btn" data-val="0" onclick="setCalcParam('nd', 0)">
+                  <strong>0</strong>
+                  <span>Bajo</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- NE Selector -->
+            <div class="calc-segment">
+              <div class="calc-segment-title">
+                <span>2. Nivel de Exposición (NE)</span>
+                <span id="ne-val-disp" style="color:var(--tertiary); font-weight:900;">NE = 3 (Frecuente)</span>
+              </div>
+              <p style="font-size:0.75rem; color:var(--on-surface-variant); margin-bottom:var(--space-xs);">
+                Frecuencia con que la persona se expone al factor de peligro en su jornada:
+              </p>
+              <div class="button-selector-group" id="ne-buttons">
+                <button type="button" class="calc-choice-btn" data-val="4" onclick="setCalcParam('ne', 4)">
+                  <strong>4</strong>
+                  <span>Continua</span>
+                </button>
+                <button type="button" class="calc-choice-btn selected" data-val="3" onclick="setCalcParam('ne', 3)">
+                  <strong>3</strong>
+                  <span>Frecuente</span>
+                </button>
+                <button type="button" class="calc-choice-btn" data-val="2" onclick="setCalcParam('ne', 2)">
+                  <strong>2</strong>
+                  <span>Ocasional</span>
+                </button>
+                <button type="button" class="calc-choice-btn" data-val="1" onclick="setCalcParam('ne', 1)">
+                  <strong>1</strong>
+                  <span>Esporádica</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- NC Selector -->
+            <div class="calc-segment">
+              <div class="calc-segment-title">
+                <span>3. Nivel de Consecuencia (NC)</span>
+                <span id="nc-val-disp" style="color:var(--tertiary); font-weight:900;">NC = 60 (Muy Grave)</span>
+              </div>
+              <p style="font-size:0.75rem; color:var(--on-surface-variant); margin-bottom:var(--space-xs);">
+                Severidad potencial del daño a las personas en caso de materializarse:
+              </p>
+              <div class="button-selector-group" id="nc-buttons">
+                <button type="button" class="calc-choice-btn" data-val="100" onclick="setCalcParam('nc', 100)">
+                  <strong>100</strong>
+                  <span>Mortal</span>
+                </button>
+                <button type="button" class="calc-choice-btn selected" data-val="60" onclick="setCalcParam('nc', 60)">
+                  <strong>60</strong>
+                  <span>Muy Grave</span>
+                </button>
+                <button type="button" class="calc-choice-btn" data-val="25" onclick="setCalcParam('nc', 25)">
+                  <strong>25</strong>
+                  <span>Grave</span>
+                </button>
+                <button type="button" class="calc-choice-btn" data-val="10" onclick="setCalcParam('nc', 10)">
+                  <strong>10</strong>
+                  <span>Leve</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Outputs Pane -->
+          <div class="calc-output-pane">
+            <div>
+              <div class="section-title" style="font-size:1.15rem; margin-bottom:var(--space-md);">
+                <i data-lucide="gauge" style="width:20px;height:20px;color:var(--primary);"></i>
+                <span>Resultado de Valoración GTC 45</span>
+              </div>
+
+              <div class="result-kpi-row">
+                <div class="kpi-tile">
+                  <div class="kpi-sub">Probabilidad (NP)</div>
+                  <div class="kpi-val" id="calc-np-val">18</div>
+                  <div style="font-size:0.72rem; font-weight:700;" id="calc-np-text">ALTO (20-10)</div>
+                </div>
+                <div class="kpi-tile">
+                  <div class="kpi-sub">Nivel Riesgo (NR)</div>
+                  <div class="kpi-val" id="calc-nr-val" style="color:var(--error);">1080</div>
+                  <div style="font-size:0.72rem; font-weight:700;" id="calc-nr-range">Rango I: 600-4000</div>
+                </div>
+              </div>
+
+              <!-- Main Risk Indicator Box -->
+              <div class="nr-hero-box" id="calc-hero-box">
+                <div class="nr-level-badge" id="calc-level-badge" style="background:var(--error); color:#fff;">
+                  NIVEL I
+                </div>
+                <div class="nr-acceptability" id="calc-accept-text" style="color:var(--error);">
+                  NO ACEPTABLE
+                </div>
+                <div class="nr-desc" id="calc-meaning-text">
+                  Situación crítica. Requiere suspensión inmediata de la actividad de trabajo o intervención urgente antes de reanudar operaciones.
+                </div>
+              </div>
+            </div>
+
+            <!-- Interventions Recommendations -->
+            <div style="background:var(--background); border:1px solid var(--outline-variant); padding:var(--space-sm);">
+              <div style="font-size:0.75rem; font-weight:800; text-transform:uppercase; color:var(--primary); margin-bottom:0.25rem;">
+                Jerarquía de Controles Aplicable (INVEA SG-SST):
+              </div>
+              <ul style="font-size:0.8125rem; line-height:1.45; padding-left:1.2rem; color:var(--on-surface);" id="calc-controls-list">
+                <li><strong>Eliminación / Sustitución:</strong> Verificar posibilidad de desenergización o maniobra remota.</li>
+                <li><strong>Control de Ingeniería:</strong> Enclavamiento LOTO y apantallamiento de barras.</li>
+                <li><strong>Administrativo:</strong> Permiso de trabajo en alturas/eléctrico y ATS en sitio.</li>
+                <li><strong>EPP:</strong> Dotación ignífuga contra Arc Flash y guantes dieléctricos certificados.</li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB 3: GUÍA RETIE & 5 REGLAS DE ORO -->
+    <div id="tab-retie" class="tab-panel" role="tabpanel" aria-labelledby="btn-tab-retie">
+      <section class="card-panel">
+        <div class="section-title-bar">
+          <h2 class="section-title">
+            <i data-lucide="zap" style="width:22px;height:22px;color:var(--tertiary);"></i>
+            <span>5 Reglas de Oro RETIE 2024 para Trabajos Sin Tensión</span>
+          </h2>
+          <span class="section-badge">RETIE 2024 • Art. 1.5.1.4</span>
+        </div>
+
+        <p style="font-size:0.9375rem; color:var(--on-surface-variant); margin-bottom:var(--space-md);">
+          En las plantas solares de INVEA S.A.S., todo mantenimiento en inversores, cajas de conexión DC (combiner boxes), transformadores o celdas de seccionamiento debe cumplir estrictamente y en secuencia el protocolo de las 5 Reglas de Oro:
+        </p>
+
+        <div class="rules-grid">
+          <div class="rule-card">
+            <div class="rule-num">1</div>
+            <div class="rule-title">Corte Visible de Tensión</div>
+            <div class="rule-body">
+              Apertura efectiva y comprobable de todas las fuentes de alimentación tanto en corriente alterna (AC) como en corriente directa (DC). En strings fotovoltaicos, aperturar los seccionadores bajo carga antes de manipular conectores.
+            </div>
+          </div>
+
+          <div class="rule-card">
+            <div class="rule-num">2</div>
+            <div class="rule-title">Enclavamiento o Bloqueo (LOTO)</div>
+            <div class="rule-body">
+              Bloqueo físico mediante candados personales de seguridad y tarjetas de advertencia ("NO OPERAR") en manetas de interruptores, disyuntores y seccionadores, impidiendo cualquier reconexión accidental por terceros.
+            </div>
+          </div>
+
+          <div class="rule-card">
+            <div class="rule-num">3</div>
+            <div class="rule-title">Verificación de Ausencia de Tensión</div>
+            <div class="rule-body">
+              Comprobación con un voltímetro o detector de tensión homologado y previamente probado en una fuente viva conocida. Medición entre fases y entre cada fase y tierra en el punto exacto de la intervención.
+            </div>
+          </div>
+
+          <div class="rule-card">
+            <div class="rule-num">4</div>
+            <div class="rule-title">Puesta a Tierra y en Cortocircuito</div>
+            <div class="rule-body">
+              Conexión equipotencial y a tierra de todas las fases activas mediante equipos de puesta a tierra portátiles certificados. Esto deriva descargas atmosféricas o inducciones parásitas directamente a tierra.
+            </div>
+          </div>
+
+          <div class="rule-card">
+            <div class="rule-num">5</div>
+            <div class="rule-title">Señalización y Delimitación</div>
+            <div class="rule-body">
+              Delimitación perimetral con conos, cadenas plásticas y carteles normalizados de advertencia ("PELIGRO: ZONA DE TRABAJO ELÉCTRICO") para confinar el área segura e impedir el acceso de personal no autorizado.
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Guidance Box: Arc Flash & Trauma por suspensión -->
+        <div style="margin-top:var(--space-xl); display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:var(--space-md);">
+          <div class="callout-box" style="margin-bottom:0;">
+            <div style="font-weight:800; font-size:1rem; margin-bottom:var(--space-xs); color:var(--primary); display:flex; align-items:center; gap:var(--space-xs);">
+              <i data-lucide="flame" style="width:18px;height:18px;color:var(--warning);"></i>
+              <span>Riesgo de Arco Eléctrico (Arc Flash) en DC</span>
+            </div>
+            <p style="font-size:0.875rem;">
+              En parques solares, las cadenas de paneles generan hasta 1500 VDC. La corriente continua no tiene cruce por cero, por lo que un arco eléctrico una vez cebado es sumamente persistente y destructivo. <strong>Nunca desconecte conectores MC4 bajo carga.</strong>
+            </p>
+          </div>
+
+          <div class="callout-box" style="margin-bottom:0; border-left-color: var(--secondary);">
+            <div style="font-weight:800; font-size:1rem; margin-bottom:var(--space-xs); color:var(--secondary); display:flex; align-items:center; gap:var(--space-xs);">
+              <i data-lucide="heart-pulse" style="width:18px;height:18px;"></i>
+              <span>Trauma por Suspensión (Res. 4272/2021)</span>
+            </div>
+            <p style="font-size:0.875rem;">
+              Tras rescatar a un trabajador suspendido de su arnés, <strong>NUNCA lo acueste en posición horizontal de inmediato</strong>. Manténgalo en posición semi-sentada (fetal) durante al menos 30 minutos para evitar que el flujo masivo de sangre estancada y toxinas cause sobrecarga cardíaca mortal.
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- TAB 4: CERTIFICADO Y ACTA OFICIAL (Auditable / Para Imprimir) -->
+    <div id="tab-cert" class="tab-panel" role="tabpanel" aria-labelledby="btn-tab-cert">
+
+      <!-- Action buttons above sheet -->
+      <div class="print-hide" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:var(--space-md); flex-wrap:wrap; gap:var(--space-sm);">
+        <p style="font-size:0.875rem; color:var(--on-surface-variant);">
+          Vista previa del acta oficial. Puede imprimirla directamente o guardarla como PDF usando el botón:
+        </p>
+        <div style="display:flex; gap:var(--space-sm);">
+          <button class="btn-primary" onclick="window.print()">
+            <i data-lucide="printer" style="width:16px;height:16px;"></i>
+            <span>Descargar / Imprimir en PDF</span>
+          </button>
+          <button class="btn-secondary" onclick="exportDataReport()">
+            <i data-lucide="download" style="width:16px;height:16px;"></i>
+            <span>Exportar Registro (.txt)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Printable Certificate Document -->
+      <article class="certificate-sheet" id="printable-certificate">
+        <!-- Certificate Header -->
+        <header class="cert-header">
+          <div>
+            <div class="cert-logo-text">INVEA S.A.S.</div>
+            <div class="cert-logo-sub">NIT: 900519295-1 • Generación de Energía Solar</div>
+            <div style="font-size:0.75rem; color:var(--on-surface-variant); font-weight:600;">
+              Sistema de Gestión de Seguridad y Salud en el Trabajo (SG-SST)
+            </div>
+          </div>
+          <div class="cert-code-box">
+            <div><strong>CÓDIGO:</strong> FOR-SST-EVAL-2026-04</div>
+            <div><strong>VERSIÓN:</strong> 03 (GTC 45 / RETIE / Res. 4272)</div>
+            <div><strong>ESTADO:</strong> DOCUMENTO CONTROLADO</div>
+          </div>
+        </header>
+
+        <!-- Certificate Title -->
+        <div class="cert-title-block">
+          <div class="cert-doc-type">ACTA INDIVIDUAL DE EVALUACIÓN Y COMPETENCIA LABORAL EN SST</div>
+          <h2 class="cert-main-heading">Habilitación en Peligros y Riesgos en Generación Fotovoltaica</h2>
+        </div>
+
+        <!-- Worker Information Table -->
+        <table class="cert-table" aria-label="Información del trabajador evaluado">
+          <tbody>
+            <tr>
+              <th style="width: 25%;">Nombre del Trabajador:</th>
+              <td style="width: 35%; font-weight:800;" id="cert-worker-name">Carlos Eduardo Mendoza Gómez</td>
+              <th style="width: 20%;">Cédula de Ciudadanía:</th>
+              <td style="width: 20%; font-family:monospace; font-weight:700;" id="cert-worker-id">1.098.765.432</td>
+            </tr>
+            <tr>
+              <th>Cargo / Puesto Ocupacional:</th>
+              <td id="cert-worker-role">Técnico Electricista Solar Fotovoltaico</td>
+              <th>Fecha de Evaluación:</th>
+              <td id="cert-eval-date">2026-11-04</td>
+            </tr>
+            <tr>
+              <th>Planta / Proyecto Solar:</th>
+              <td colspan="3" id="cert-worker-project">Parque Solar Fotovoltaico INVEA I</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Results Table -->
+        <div style="font-weight:800; font-size:0.875rem; margin-bottom:var(--space-xs); text-transform:uppercase; color:var(--primary);">
+          Resultados de la Evaluación de Competencias Técnicas
+        </div>
+        <table class="cert-table" aria-label="Desglose de calificaciones">
+          <thead>
+            <tr>
+              <th>Módulo Normativo Evaluado</th>
+              <th style="text-align:center;">Preguntas</th>
+              <th style="text-align:center;">Aciertos</th>
+              <th style="text-align:center;">Puntaje Módulo</th>
+              <th style="text-align:center;">Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Módulo 1:</strong> Metodología GTC 45:2012 y Jerarquía de Controles</td>
+              <td style="text-align:center;">4</td>
+              <td style="text-align:center;" id="cert-score-gtc-hits">4</td>
+              <td style="text-align:center;" id="cert-score-gtc-pct">100%</td>
+              <td style="text-align:center; font-weight:700; color:var(--positive);">COMPETENTE</td>
+            </tr>
+            <tr>
+              <td><strong>Módulo 2:</strong> Riesgo Eléctrico y RETIE 2024 (Art. 1.5.1.4 y LOTO)</td>
+              <td style="text-align:center;">4</td>
+              <td style="text-align:center;" id="cert-score-retie-hits">4</td>
+              <td style="text-align:center;" id="cert-score-retie-pct">100%</td>
+              <td style="text-align:center; font-weight:700; color:var(--positive);">COMPETENTE</td>
+            </tr>
+            <tr>
+              <td><strong>Módulo 3:</strong> Trabajo Seguro en Alturas (Res. 4272 de 2021)</td>
+              <td style="text-align:center;">4</td>
+              <td style="text-align:center;" id="cert-score-alt-hits">4</td>
+              <td style="text-align:center;" id="cert-score-alt-pct">100%</td>
+              <td style="text-align:center; font-weight:700; color:var(--positive);">COMPETENTE</td>
+            </tr>
+            <tr>
+              <td><strong>Módulo 4:</strong> Peligros Físicos (UV / Ruido) y Biomecánicos</td>
+              <td style="text-align:center;">3</td>
+              <td style="text-align:center;" id="cert-score-bio-hits">3</td>
+              <td style="text-align:center;" id="cert-score-bio-pct">100%</td>
+              <td style="text-align:center; font-weight:700; color:var(--positive);">COMPETENTE</td>
+            </tr>
+            <tr style="background:var(--surface-container-low); font-weight:800;">
+              <td>CALIFICACIÓN GLOBAL CONSOLIDADA</td>
+              <td style="text-align:center;">15</td>
+              <td style="text-align:center;" id="cert-score-total-hits">15</td>
+              <td style="text-align:center; font-size:1.1rem; color:var(--primary);" id="cert-score-total-pct">100%</td>
+              <td style="text-align:center; font-size:1rem;" id="cert-score-global-status">
+                <span style="color:var(--positive); font-weight:900;">APROBADO</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Declaration & Legal Endorsement -->
+        <div class="cert-declaration">
+          <strong>DECLARACIÓN DE CONFORMIDAD Y CUMPLIMIENTO LEGAL:</strong>
+          El evaluado ha demostrado conocimiento y suficiencia en los procedimientos de identificación de peligros y valoración de riesgos (GTC 45:2012), aplicación estricta de las 5 Reglas de Oro para trabajos sin tensión y criterio de peligro inminente (RETIE 2024 Art. 1.5.1.4), así como medidas de protección y rescate contra caídas a partir de 2.00 m (Resolución 4272 de 2021). Este documento reposará en la carpeta personal de SST del trabajador en cumplimiento del Decreto 1072 de 2015.
+        </div>
+
+        <!-- Signatures Grid -->
+        <footer class="signatures-grid">
+          <div class="signature-box">
+            <div style="height: 48px; display: flex; align-items: flex-end; justify-content: center;">
+              <span style="font-family: cursive; font-size: 1.15rem; color: #222;" id="sig-worker-disp">Carlos E. Mendoza G.</span>
+            </div>
+            <div class="sig-name" id="sig-worker-name">Carlos Eduardo Mendoza Gómez</div>
+            <div class="sig-role">Trabajador Evaluado / Operador Solar</div>
+            <div class="sig-id" id="sig-worker-id">C.C. 1.098.765.432</div>
+          </div>
+
+          <div class="signature-box">
+            <div style="height: 48px; display: flex; align-items: flex-end; justify-content: center;">
+              <div class="sig-stamp-mock">CERTIFICACIÓN SGSST VÁLIDA</div>
+            </div>
+            <div class="sig-name">Jhoan Alexander Florez Beltran</div>
+            <div class="sig-role">Profesional en Admon SST • Responsable SG-SST</div>
+            <div class="sig-id">Licencia SST: 2026060907804 • INVEA S.A.S.</div>
+          </div>
+        </footer>
+      </article>
+
+    </div>
+
+  </main>
+
+  <!-- NotebookAppApi Shim Injection Placeholder -->
+  <api-shim></api-shim>
+
+  <!-- Application Logic -->
+  <script>
+    /* ==========================================================================
+       QUESTION BANK (15 Items Contextualized to INVEA S.A.S. Solar Energy)
+       ========================================================================== */
+    const QUESTION_BANK = [
+      // MÓDULO 1: METODOLOGÍA GTC 45:2012 Y JERARQUÍA DE CONTROLES
+      {
+        id: 1,
+        module: 'gtc',
+        moduleName: 'GTC 45:2012',
+        tag: 'GTC 45:2012 • Definición Fundamental',
+        title: '¿Cuál es la diferencia conceptual correcta entre "Peligro" y "Riesgo" de acuerdo con la Guía Técnica Colombiana GTC 45:2012?',
+        options: [
+          { letter: 'A', text: 'El peligro es la consecuencia médica materializada en el trabajador, mientras que el riesgo es el costo económico asumido por la empresa.' },
+          { letter: 'B', text: 'El peligro es una fuente, situación o acto con potencial de causar daño (en lesión o enfermedad); el riesgo es la combinación de la probabilidad de que ocurra y la severidad del daño.', correct: true },
+          { letter: 'C', text: 'Peligro y riesgo son términos idénticos e intercambiables en la matriz de riesgos del SG-SST.' },
+          { letter: 'D', text: 'El peligro solo aplica a riesgos biomecánicos y físicos, mientras que el riesgo aplica a riesgos eléctricos y químicos.' }
+        ],
+        normCitation: 'GTC 45:2012 — Numeral 2 (Términos y Definiciones)',
+        explanation: 'La GTC 45 define Peligro como la fuente intrínseca, situación o acto con potencial de daño. El Riesgo es la combinación matemática y operativa de la probabilidad de exposición a ese peligro por la gravedad de las consecuencias resultantes.'
+      },
+      {
+        id: 2,
+        module: 'gtc',
+        moduleName: 'GTC 45:2012',
+        tag: 'GTC 45:2012 • Cálculo de Niveles',
+        title: 'Para valorar cuantitativamente un riesgo en el parque solar de INVEA S.A.S. según la GTC 45, ¿cuál es la fórmula matemática para obtener el Nivel de Riesgo (NR)?',
+        options: [
+          { letter: 'A', text: 'NR = ND + NE + NC (suma lineal de deficiencia, exposición y consecuencia)' },
+          { letter: 'B', text: 'NR = NP × NC, donde el Nivel de Probabilidad (NP) resulta del producto de ND (Deficiencia) por NE (Exposición).', correct: true },
+          { letter: 'C', text: 'NR = (ND / NE) × 100 con factor de ponderación mensual.' },
+          { letter: 'D', text: 'NR = NC multiplicado por el número total de trabajadores expuestos en la cuadrilla.' }
+        ],
+        normCitation: 'GTC 45:2012 — Numeral 3.2.2 y Tabla 5',
+        explanation: 'La metodología GTC 45 establece de manera estricta que NP = ND × NE (Nivel de Probabilidad = Nivel de Deficiencia × Nivel de Exposición). Posteriormente, el Nivel de Riesgo se calcula como NR = NP × NC (Nivel de Probabilidad × Nivel de Consecuencia).'
+      },
+      {
+        id: 3,
+        module: 'gtc',
+        moduleName: 'GTC 45:2012',
+        tag: 'GTC 45:2012 • Aceptabilidad del Riesgo',
+        title: 'Si la valoración de una tarea en el parque solar arroja un valor de Nivel de Riesgo NR = 1200 (Nivel I), ¿cuál es el significado y nivel de aceptabilidad según la GTC 45?',
+        options: [
+          { letter: 'A', text: 'Nivel Aceptable: Se continúa la labor sin cambios, registrando la observación en la reunión de COPASST del mes.' },
+          { letter: 'B', text: 'Nivel Mejorable: Se programa capacitación para el siguiente semestre sin detener labores.' },
+          { letter: 'C', text: 'No Aceptable: Situación crítica que exige suspensión inmediata de la actividad o intervención urgente y prioritaria antes de reanudar operaciones.', correct: true },
+          { letter: 'D', text: 'Aceptable con control específico: Basta con colocar una cinta reflectiva y continuar trabajando.' }
+        ],
+        normCitation: 'GTC 45:2012 — Numeral 3.3.1 y Tabla 8 (Aceptabilidad del Riesgo)',
+        explanation: 'El Nivel de Riesgo I (rango de 600 a 4000) clasifica la labor como No Aceptable / Situación Crítica. La norma exige la interrupción inmediata de los trabajos hasta que se implementen medidas de control efectivas que reduzcan el nivel.'
+      },
+      {
+        id: 4,
+        module: 'gtc',
+        moduleName: 'GTC 45:2012',
+        tag: 'GTC 45 / Dec. 1072 • Jerarquía de Controles',
+        title: 'Al intervenir un peligro crítico en inversores solares, ¿cuál es el orden estricto de la Jerarquía de Controles que debe aplicar el área de SST conforme al Decreto 1072 de 2015 y la GTC 45?',
+        options: [
+          { letter: 'A', text: '1. EPP -> 2. Señalización -> 3. Controles Administrativos -> 4. Sustitución -> 5. Eliminación' },
+          { letter: 'B', text: '1. Eliminación -> 2. Sustitución -> 3. Controles de Ingeniería -> 4. Controles Administrativos / Señalización -> 5. Equipos y Elementos de Protección Personal (EPP).', correct: true },
+          { letter: 'C', text: '1. Controles Administrativos -> 2. EPP -> 3. Controles de Ingeniería -> 4. Eliminación' },
+          { letter: 'D', text: '1. Entrega de EPP dieléctricos -> 2. Capacitación -> 3. Eliminación del circuito' }
+        ],
+        normCitation: 'Decreto 1072 de 2015 (Art. 2.2.4.6.24) y GTC 45:2012',
+        explanation: 'La jerarquía legal y técnica es descendente y prioritaria: primero intentar eliminar el peligro, si no es posible sustituirlo, luego aplicar ingeniería (barreras físicas, enclavamientos), controles administrativos/señalización, y como última línea de defensa residual los EPP.'
+      },
+
+      // MÓDULO 2: RIESGO ELÉCTRICO Y RETIE 2024 EN PARQUES SOLARES
+      {
+        id: 5,
+        module: 'retie',
+        moduleName: 'RETIE 2024',
+        tag: 'RETIE 2024 • Reglas de Oro',
+        title: '¿Cuál es el orden secuencial y obligatorio de las 5 Reglas de Oro del RETIE 2024 para trabajos sin tensión en tableros y cajas de combinación (combiner boxes)?',
+        options: [
+          { letter: 'A', text: '1. Puesta a tierra -> 2. Bloqueo LOTO -> 3. Corte visible -> 4. Señalización -> 5. Prueba con multímetro.' },
+          { letter: 'B', text: '1. Corte visible de fuentes -> 2. Enclavamiento o bloqueo mecánico (LOTO) -> 3. Verificación de ausencia de tensión -> 4. Puesta a tierra y en cortocircuito -> 5. Señalización y delimitación de la zona.', correct: true },
+          { letter: 'C', text: '1. Señalización perimetral -> 2. Corte visible -> 3. Puesta a tierra -> 4. Enclavamiento -> 5. Verificación.' },
+          { letter: 'D', text: '1. Colocación de guantes dieléctricos -> 2. Apertura del disyuntor -> 3. Trabajo rápido -> 4. Cierre del sistema.' }
+        ],
+        normCitation: 'RETIE 2024 — Capítulo de Seguridad en Trabajos Eléctricos Sin Tensión',
+        explanation: 'Las 5 Reglas de Oro son universales y cronológicas: 1. Corte visible, 2. Enclavamiento/bloqueo (LOTO), 3. Verificación de ausencia de tensión con detector probado, 4. Puesta a tierra y cortocircuito, y 5. Señalización perimetral.'
+      },
+      {
+        id: 6,
+        module: 'retie',
+        moduleName: 'RETIE 2024',
+        tag: 'RETIE 2024 • Art. 1.5.1.4',
+        title: 'Conforme al Artículo 1.5.1.4 del RETIE 2024 sobre "Criterios de Alto Riesgo o Peligro Inminente", cuando se identifica una condición que amenaza gravemente la vida del técnico en el parque solar, ¿cuál es la acción exigida?',
+        options: [
+          { letter: 'A', text: 'Continuar la labor aumentando la velocidad para terminar antes de que ocurra una falla.' },
+          { letter: 'B', text: 'Interrupción y desenergización inmediata de la instalación o circuito, suspensión de los trabajos y reporte directo a SST hasta eliminar la condición.', correct: true },
+          { letter: 'C', text: 'Solicitar una prórroga escrita de 15 días calendario antes de tomar medidas.' },
+          { letter: 'D', text: 'Colocar una cinta amarilla alrededor del transformador y permitir que un técnico trabaje solo.' }
+        ],
+        normCitation: 'RETIE 2024 — Artículo 1.5.1.4 (Peligro Inminente)',
+        explanation: 'El Art. 1.5.1.4 del RETIE 2024 dictamina que toda condición de peligro inminente con potencial de muerte o lesión grave conlleva la interrupción inmediata y obligatoria del servicio o actividad, sin que medie autorización previa.'
+      },
+      {
+        id: 7,
+        module: 'retie',
+        moduleName: 'RETIE 2024',
+        tag: 'Seguridad en Corriente Directa (DC)',
+        title: 'Al intervenir cadenas (strings) fotovoltaicas bajo irradiación solar, ¿cuál es una particularidad crítica del riesgo en Corriente Directa (DC) frente a Corriente Alterna (AC)?',
+        options: [
+          { letter: 'A', text: 'Los paneles solares dejan de producir voltaje inmediatamente al abrir el interruptor de corriente alterna (AC).' },
+          { letter: 'B', text: 'Mientras haya radiación incidiendo sobre los paneles, los módulos continúan generando tensión DC (hasta 1500V); desconectar conectores MC4 bajo carga genera un arco eléctrico (Arc Flash) sostenido y destructivo.', correct: true },
+          { letter: 'C', text: 'La corriente directa a 1000 VDC no produce arcos eléctricos ni fibrilación cardíaca.' },
+          { letter: 'D', text: 'Los conectores solares MC4 pueden desconectarse con la mano sin herramientas ni apertura previa del seccionador.' }
+        ],
+        normCitation: 'RETIE 2024 y Normativa Técnica Solar Fotovoltaica',
+        explanation: 'Los módulos solares son generadores activos por luz. Mientras haya irradiación solar, los strings están energizados a tensiones de hasta 1000V o 1500 VDC. La corriente continua carece de cruce por cero, por lo cual desconectar bajo carga provoca arcos eléctricos destructivos e incendios.'
+      },
+      {
+        id: 8,
+        module: 'retie',
+        moduleName: 'RETIE 2024',
+        tag: 'Tipos de Contacto Eléctrico',
+        title: 'Un operador de INVEA S.A.S. toca la envolvente metálica exterior de un inversor central que presentó una falla de aislamiento y recibe una descarga eléctrica. ¿A qué tipo de contacto corresponde y cómo se controla?',
+        options: [
+          { letter: 'A', text: 'Contacto Directo; se controla únicamente utilizando calzado con puntera de acero.' },
+          { letter: 'B', text: 'Contacto Indirecto; se previene mediante el sistema de puesta a tierra equipotencial, protecciones diferenciales y monitores de aislamiento.', correct: true },
+          { letter: 'C', text: 'Contacto por Radiación UV; se controla con protector solar en crema.' },
+          { letter: 'D', text: 'Contacto Estático Atmosférico; no tiene mecanismo de prevención en plantas solares.' }
+        ],
+        normCitation: 'RETIE 2024 — Contacto Directo e Indirecto',
+        explanation: 'El contacto indirecto ocurre cuando una persona entra en contacto con masas metálicas puestas accidentalmente bajo tensión por degradación del aislamiento. Se controla con sistemas de puesta a tierra conforme a RETIE e interruptores diferenciales.'
+      },
+
+      // MÓDULO 3: TRABAJO SEGURO EN ALTURAS (RESOLUCIÓN 4272 DE 2021)
+      {
+        id: 9,
+        module: 'alturas',
+        moduleName: 'Resolución 4272/2021',
+        tag: 'Res. 4272/2021 • Campo y Umbral',
+        title: 'De acuerdo con el Artículo 3 de la Resolución 4272 de 2021 del Ministerio del Trabajo, ¿a partir de qué altura se considera obligatoria la aplicación del reglamento de Trabajo en Alturas?',
+        options: [
+          { letter: 'A', text: 'A partir de 1.50 metros exclusivamente en obras de construcción.' },
+          { letter: 'B', text: 'A partir de 2.00 metros o más sobre un nivel inferior en cualquier actividad laboral formal en Colombia.', correct: true },
+          { letter: 'C', text: 'Únicamente a partir de los 5.00 metros en postes y torres de transmisión.' },
+          { letter: 'D', text: 'A partir de 1.20 metros en escaleras de tijera y 3.00 metros en techos.' }
+        ],
+        normCitation: 'Resolución 4272 de 2021 — Artículo 3 (Campo de Aplicación)',
+        explanation: 'La Resolución 4272 de 2021 unificó el umbral de trabajo seguro en alturas en Colombia a 2.00 metros o más sobre un nivel inferior, aplicando a todos los sectores económicos del país.'
+      },
+      {
+        id: 10,
+        module: 'alturas',
+        moduleName: 'Resolución 4272/2021',
+        tag: 'Res. 4272/2021 • Puntos de Anclaje',
+        title: 'Al instalar módulos solares sobre cubiertas o estructuras elevadas en INVEA S.A.S., ¿cuál es la resistencia mínima exigida por persona conectada para un punto de anclaje certificado?',
+        options: [
+          { letter: 'A', text: '1.000 lbf (4.4 kN) por persona conectada.' },
+          { letter: 'B', text: '2.500 lbf (11.1 kN) por persona conectada.' },
+          { letter: 'C', text: '5.000 lbf (22.2 kN o aprox. 2.272 kg) por persona conectada, o el doble de la fuerza máxima de detención calculada por persona calificada.', correct: true },
+          { letter: 'D', text: '10.000 lbf únicamente para líneas de vida temporales de cuerda.' }
+        ],
+        normCitation: 'Resolución 4272 de 2021 — Puntos de Anclaje y Sistemas de Detención',
+        explanation: 'La Res. 4272/2021 exige que todo punto de anclaje fijo o estructural debe resistir mínimo 5.000 lbf (22.2 kN) por trabajador conectado, avalado con certificado del fabricante o memoria técnica suscrita por persona calificada.'
+      },
+      {
+        id: 11,
+        module: 'alturas',
+        moduleName: 'Resolución 4272/2021',
+        tag: 'Res. 4272/2021 • Documentación en Sitio',
+        title: 'Previo al ascenso de la cuadrilla técnica para realizar mantenimiento en una estructura solar a 3.8 metros, ¿cuáles son los dos documentos obligatorios diligenciados en sitio?',
+        options: [
+          { letter: 'A', text: 'La factura del panel solar y la planilla de pago de peajes.' },
+          { letter: 'B', text: 'El Permiso de Trabajo en Alturas (PTA) avalado y firmado por el Coordinador TSA y el Análisis de Trabajo Seguro (ATS).', correct: true },
+          { letter: 'C', text: 'El carné de afiliación a la EPS y el carné de vacunación.' },
+          { letter: 'D', text: 'Una lista de asistencia informal sin evaluación de riesgos.' }
+        ],
+        normCitation: 'Resolución 4272 de 2021 — Artículos 17 (Permiso de Trabajo) y 18 (ATS)',
+        explanation: 'La Res. 4272/2021 exige como requisito sine qua non el Permiso de Trabajo en Alturas (PTA) validado por el Coordinador de Trabajo en Alturas, acompañado del Análisis de Trabajo Seguro (ATS) específico para las condiciones de la tarea.'
+      },
+      {
+        id: 12,
+        module: 'alturas',
+        moduleName: 'Resolución 4272/2021',
+        tag: 'Res. 4272/2021 • Manejo Post-Rescate',
+        title: 'Un instalador cae y queda suspendido de su arnés durante 15 minutos antes de ser bajado al suelo. Para prevenir la muerte por Trauma por Suspensión (choque ortostático), ¿cuál es el protocolo de primeros auxilios?',
+        options: [
+          { letter: 'A', text: 'Acostar a la víctima completamente horizontal boca arriba y levantarle los pies de inmediato a 90 grados.' },
+          { letter: 'B', text: 'Mantener a la víctima en posición semi-sentada o en cuclillas (posición fetal/semisentada) durante al menos 30 a 40 minutos, evitando recostarla súbitamente.', correct: true },
+          { letter: 'C', text: 'Hacerlo correr intensamente alrededor de la planta para acelerar el bombeo cardíaco.' },
+          { letter: 'D', text: 'Darle bebidas con cafeína y permitirle subir nuevamente a la estructura.' }
+        ],
+        normCitation: 'Resolución 4272 de 2021 — Plan de Emergencias y Rescate en Alturas',
+        explanation: 'En el Trauma por Suspensión o Síndrome del Arnés, la sangre desoxigenada y toxinas retenidas en miembros inferiores pueden provocar una sobrecarga ventricular aguda (muerte del rescate) si se acuesta al paciente en posición horizontal súbita. Se debe conservar la postura semi-sentada durante su atención médica.'
+      },
+
+      // MÓDULO 4: PELIGROS FÍSICOS Y BIOMECÁNICOS EN OPERACIÓN SOLAR
+      {
+        id: 13,
+        module: 'bio',
+        moduleName: 'Físico & Biomecánico',
+        tag: 'Peligros Físicos • Radiación UV y Estrés Térmico',
+        title: 'Los instaladores de INVEA S.A.S. en campo abierto enfrentan jornadas continuas bajo alta irradiación solar y calor. ¿Cuáles son los controles integrales más efectivos en el SG-SST?',
+        options: [
+          { letter: 'A', text: 'Permitir trabajar sin camisa y suministrar café caliente en las horas de mayor calor.' },
+          { letter: 'B', text: 'Ropa técnica manga larga con factor de protección UPF 50+, sombrero legionario / cubrenuca para casco, gafas con filtro UV400, puntos continuos de hidratación con agua/sales y pausas activas bajo carpas de sombra.', correct: true },
+          { letter: 'C', text: 'Aplicación de bloqueador solar una sola vez al inicio de la semana de trabajo.' },
+          { letter: 'D', text: 'Desconectar la planta solar a mediodía para reducir la temperatura del aire ambiente.' }
+        ],
+        normCitation: 'GTC 45:2012 y Guías de Exposición a Radiación Solar Ultravioleta (Ministerio de Salud)',
+        explanation: 'El control de la radiación UV y estrés térmico requiere un enfoque integral: vestimenta de protección UPF 50+, cubrenuca, gafas con protección UV certificada, hidratación permanente y esquemas de trabajo-descanso bajo sombra para regular la temperatura corporal.'
+      },
+      {
+        id: 14,
+        module: 'bio',
+        moduleName: 'Físico & Biomecánico',
+        tag: 'Peligro Biomecánico • Manipulación de Cargas',
+        title: 'Un módulo fotovoltaico de 580W de gran formato mide 2.3 metros y pesa 32 kg. De acuerdo con los criterios ergonómicos y la Resolución 2400 de 1979 en Colombia, ¿cómo debe manipularse?',
+        options: [
+          { letter: 'A', text: 'Un solo operario debe cargarlo sobre la cabeza doblando la cintura rápidamente.' },
+          { letter: 'B', text: 'Levantamiento coordinado en equipo por dos (2) operarios (en dupla) con agarre firme y rodillas flexionadas, o empleando carros porta-módulos mecánicos.', correct: true },
+          { letter: 'C', text: 'Lanzando el panel por el aire desde el camión hacia la estructura metálica.' },
+          { letter: 'D', text: 'Arrastrando el panel por el suelo utilizando los cables de conexión eléctrica como agarradera.' }
+        ],
+        normCitation: 'Resolución 2400 de 1979 (Título X) y Criterios Ergonómicos NIOSH / GTC 45',
+        explanation: 'En Colombia, el límite de levantamiento individual seguro para hombres es de 25 kg en condiciones ideales. Al pesar 32 kg y tener gran superficie sujeta a viento (efecto vela), es imperativo el cargue coordinado en duplas o mediante ayudas mecánicas para prevenir lesiones osteomusculares graves.'
+      },
+      {
+        id: 15,
+        module: 'bio',
+        moduleName: 'Físico & Biomecánico',
+        tag: 'Peligros Físicos • Ruido y Calor en Inversores',
+        title: 'Al ingresar a las salas y casetas de inversores centrales y subestación elevadora en operación, ¿qué peligros físicos predominan y qué EPP es obligatorio?',
+        options: [
+          { letter: 'A', text: 'Presión barométrica baja y frío extremo; no se requiere ningún EPP especial.' },
+          { letter: 'B', text: 'Ruido continuo generado por ventiladores de refrigeración forzada y calor electromagnético; se exige protección auditiva tipo copa/inserción, calzado dieléctrico y dotación de algodón ignífugo contra Arc Flash.', correct: true },
+          { letter: 'C', text: 'Radiación ionizante gamma; se requiere traje de plomo completo.' },
+          { letter: 'D', text: 'Riesgo biológico por mordedura de animales marinos exclusivamente.' }
+        ],
+        normCitation: 'GTC 45:2012 y RETIE 2024 (Seguridad en Salas Eléctricas)',
+        explanation: 'Las casetas de inversores centrales y transformadores concentran altos niveles de presión sonora por enfriamiento forzado y fuentes de calor electromagnético, además de la proximidad a barras energizadas. Requieren protección auditiva certificada, dotación ignífuga y calzado dieléctrico.'
+      }
+    ];
+
+    /* ==========================================================================
+       APP STATE
+       ========================================================================== */
+    let userAnswers = {}; // { 1: 'B', 2: 'B', ... }
+    let quizSubmitted = false;
+    let showingAllFeedback = false;
+    let currentFilter = 'all';
+
+    // Calculator State (GTC 45)
+    let calcState = {
+      nd: 6,
+      ne: 3,
+      nc: 60
+    };
+
+    /* ==========================================================================
+       INITIALIZATION & SHIM PERSISTENCE
+       ========================================================================== */
+    window.addEventListener('DOMContentLoaded', async function () {
+      // 1. Render all questions into DOM
+      renderQuestions();
+
+      // 2. Restore state if available
+      await restoreAppState();
+
+      // 3. Compute initial live progress & calculator outputs
+      updateProgressDisplay();
+      updateCalculator();
+      syncWorkerDataToCert();
+
+      // 4. Initialize Lucide icons
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+      }
+
+      // 5. Notify App Ready via Shim
+      if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === 'function') {
+        try {
+          window.notebookAppApi.notifyAppReady();
+        } catch (e) {
+          console.warn('Error en notifyAppReady:', e);
+        }
+      }
+    });
+
+    /* ==========================================================================
+       RENDER QUESTIONS
+       ========================================================================== */
+    function renderQuestions() {
+      const container = document.getElementById('questions-list');
+      if (!container) return;
+
+      let html = '';
+      let currentMod = '';
+
+      QUESTION_BANK.forEach(function (q, index) {
+        // Module separator banner
+        if (q.module !== currentMod) {
+          currentMod = q.module;
+          html += `
+            <div class="module-separator" data-mod="${q.module}">
+              <h3>${q.moduleName}</h3>
+              <span class="module-norm-tag">${q.tag.split('•')[0].trim()}</span>
+            </div>
+          `;
+        }
+
+        const isAnswered = userAnswers[q.id] !== undefined;
+        const selectedLetter = userAnswers[q.id] || '';
+
+        html += `
+          <article class="question-card ${isAnswered ? 'answered' : ''}" id="q-card-${q.id}" data-mod="${q.module}">
+            <div class="question-header">
+              <div class="step-badge">${q.id}</div>
+              <div class="question-meta-group">
+                <span class="question-tag">${q.tag}</span>
+                <h4 class="question-title">${q.title}</h4>
+              </div>
+            </div>
+
+            <div class="options-group" role="radiogroup" aria-labelledby="q-card-${q.id}">
+              ${q.options.map(function (opt) {
+                const isChecked = selectedLetter === opt.letter;
+                return `
+                  <label class="option-label ${isChecked ? 'selected' : ''}" id="opt-label-${q.id}-${opt.letter}">
+                    <input type="radio"
+                           name="question-${q.id}"
+                           value="${opt.letter}"
+                           class="option-radio"
+                           ${isChecked ? 'checked' : ''}
+                           onchange="handleSelectAnswer(${q.id}, '${opt.letter}')">
+                    <span class="option-letter">${opt.letter}.</span>
+                    <span class="option-text">${opt.text}</span>
+                  </label>
+                `;
+              }).join('')}
+            </div>
+
+            <!-- Feedback & Normative Rationale Box -->
+            <div class="feedback-box" id="feedback-${q.id}">
+              <div id="feedback-badge-${q.id}" class="feedback-badge correct">
+                <i data-lucide="info" style="width:14px;height:14px;"></i>
+                <span>JUSTIFICACIÓN NORMATIVA</span>
+              </div>
+              <div class="feedback-norm">Referencia: ${q.normCitation}</div>
+              <div class="feedback-text">${q.explanation}</div>
+            </div>
+          </article>
+        `;
+      });
+
+      container.innerHTML = html;
+
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+      }
+    }
+
+    /* ==========================================================================
+       ANSWER HANDLING
+       ========================================================================== */
+    function handleSelectAnswer(questionId, letter) {
+      userAnswers[questionId] = letter;
+
+      // Update card style
+      const card = document.getElementById(`q-card-${questionId}`);
+      if (card) {
+        card.classList.add('answered');
+      }
+
+      // Update option label visual state
+      const labels = document.querySelectorAll(`[id^="opt-label-${questionId}-"]`);
+      labels.forEach(function (lbl) {
+        lbl.classList.remove('selected');
+      });
+
+      const selectedLabel = document.getElementById(`opt-label-${questionId}-${letter}`);
+      if (selectedLabel) {
+        selectedLabel.classList.add('selected');
+      }
+
+      // If quiz was already evaluated, re-check this card's feedback
+      if (quizSubmitted) {
+        checkSingleQuestionFeedback(questionId);
+        recomputeScoresOnly();
+      }
+
+      updateProgressDisplay();
+      persistAppState();
+    }
+
+    /* ==========================================================================
+       PROGRESS BAR & STATS
+       ========================================================================== */
+    function updateProgressDisplay() {
+      const total = QUESTION_BANK.length;
+      const answeredCount = Object.keys(userAnswers).length;
+      const pct = Math.round((answeredCount / total) * 100);
+
+      const progText = document.getElementById('progress-text');
+      const progFill = document.getElementById('progress-fill');
+
+      if (progText) {
+        progText.textContent = `Progreso: ${answeredCount} de ${total} preguntas respondidas (${pct}%)`;
+      }
+      if (progFill) {
+        progFill.style.width = `${pct}%`;
+      }
+    }
+
+    /* ==========================================================================
+       QUESTION FILTERING
+       ========================================================================== */
+    function filterQuestions(filterType) {
+      currentFilter = filterType;
+
+      const buttons = ['flt-all', 'flt-gtc', 'flt-retie', 'flt-alturas', 'flt-bio'];
+      buttons.forEach(function (btnId) {
+        const btn = document.getElementById(btnId);
+        if (btn) btn.classList.remove('active');
+      });
+
+      const activeBtn = document.getElementById(`flt-${filterType}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const cards = document.querySelectorAll('.question-card');
+      const separators = document.querySelectorAll('.module-separator');
+
+      cards.forEach(function (card) {
+        const mod = card.getAttribute('data-mod');
+        if (filterType === 'all' || mod === filterType) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      separators.forEach(function (sep) {
+        const mod = sep.getAttribute('data-mod');
+        if (filterType === 'all' || mod === filterType) {
+          sep.style.display = 'flex';
+        } else {
+          sep.style.display = 'none';
+        }
+      });
+    }
+
+    function filterIncorrectQuestions() {
+      if (!quizSubmitted) {
+        evaluateQuiz();
+      }
+
+      QUESTION_BANK.forEach(function (q) {
+        const card = document.getElementById(`q-card-${q.id}`);
+        const userAns = userAnswers[q.id];
+        const correctOpt = q.options.find(function (o) { return o.correct; });
+        const isCorrect = userAns && correctOpt && userAns === correctOpt.letter;
+
+        if (card) {
+          card.style.display = isCorrect ? 'none' : 'block';
+        }
+      });
+
+      const separators = document.querySelectorAll('.module-separator');
+      separators.forEach(function (sep) {
+        sep.style.display = 'none';
+      });
+
+      const firstIncorrect = document.querySelector('.question-card.incorrect-review');
+      if (firstIncorrect) {
+        firstIncorrect.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    /* ==========================================================================
+       EVALUATE QUIZ
+       ========================================================================== */
+    function evaluateQuiz() {
+      const total = QUESTION_BANK.length;
+      let totalHits = 0;
+
+      let modStats = {
+        gtc: { total: 0, hits: 0 },
+        retie: { total: 0, hits: 0 },
+        alturas: { total: 0, hits: 0 },
+        bio: { total: 0, hits: 0 }
+      };
+
+      QUESTION_BANK.forEach(function (q) {
+        modStats[q.module].total++;
+        const userAns = userAnswers[q.id];
+        const correctOpt = q.options.find(function (o) { return o.correct; });
+        const isCorrect = userAns && correctOpt && userAns === correctOpt.letter;
+
+        if (isCorrect) {
+          totalHits++;
+          modStats[q.module].hits++;
+        }
+
+        // Apply feedback visual classes to card
+        const card = document.getElementById(`q-card-${q.id}`);
+        const feedbackBox = document.getElementById(`feedback-${q.id}`);
+        const feedbackBadge = document.getElementById(`feedback-badge-${q.id}`);
+
+        if (card) {
+          card.classList.remove('correct-review', 'incorrect-review');
+          card.classList.add(isCorrect ? 'correct-review' : 'incorrect-review');
+        }
+
+        if (feedbackBox) {
+          feedbackBox.classList.add('visible');
+        }
+
+        if (feedbackBadge) {
+          if (isCorrect) {
+            feedbackBadge.className = 'feedback-badge correct';
+            feedbackBadge.innerHTML = `<i data-lucide="check" style="width:14px;height:14px;"></i><span>CORRECTO — ${q.normCitation}</span>`;
+          } else {
+            const correctLetter = correctOpt ? correctOpt.letter : '';
+            feedbackBadge.className = 'feedback-badge incorrect';
+            feedbackBadge.innerHTML = `<i data-lucide="x" style="width:14px;height:14px;"></i><span>RESPUESTA CORRECTA: [${correctLetter}] — ${q.normCitation}</span>`;
+          }
+        }
+      });
+
+      quizSubmitted = true;
+      showingAllFeedback = true;
+
+      const pct = Math.round((totalHits / total) * 100);
+      const isApproved = pct >= 80;
+
+      // Update Results Panel
+      const resPanel = document.getElementById('results-panel');
+      const resScoreNum = document.getElementById('res-score-num');
+      const resCorrectCount = document.getElementById('res-correct-count');
+      const resStateBadge = document.getElementById('res-state-badge');
+      const resHeadline = document.getElementById('res-headline');
+      const resSummary = document.getElementById('res-summary-text');
+
+      if (resPanel) resPanel.style.display = 'grid';
+      if (resScoreNum) resScoreNum.textContent = `${pct}%`;
+      if (resCorrectCount) resCorrectCount.textContent = `${totalHits} de ${total} correctas`;
+
+      if (resStateBadge) {
+        resStateBadge.textContent = isApproved ? 'APROBADO' : 'REQUIERE REFUERZO';
+        resStateBadge.className = isApproved ? 'score-state-badge passed' : 'score-state-badge failed';
+      }
+
+      if (resHeadline) {
+        resHeadline.textContent = isApproved
+          ? 'Competencia Validada para Trabajos en Plantas Solares'
+          : 'Puntaje Inferior al Umbral Mínimo Requerido (80%)';
+      }
+
+      if (resSummary) {
+        resSummary.textContent = isApproved
+          ? 'El trabajador cumple con los estándares teóricos del SG-SST (GTC 45, RETIE 2024 y Res. 4272/2021). Se habilita la emisión y firma del acta oficial.'
+          : 'Se requiere retroalimentación técnica guiada por el Coordinador SST Jhoan Alexander Florez Beltran previo al reintento de la evaluación.';
+      }
+
+      // Module breakdown stats
+      updateModStatDOM('gtc', modStats.gtc.hits, modStats.gtc.total);
+      updateModStatDOM('retie', modStats.retie.hits, modStats.retie.total);
+      updateModStatDOM('alturas', modStats.alturas.hits, modStats.alturas.total);
+      updateModStatDOM('bio', modStats.bio.hits, modStats.bio.total);
+
+      // Sync Certificate
+      updateCertificateData(totalHits, total, pct, isApproved, modStats);
+
+      // Re-initialize Lucide Icons for injected badges
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+      }
+
+      // Smooth scroll to results
+      if (resPanel) {
+        resPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      persistAppState();
+    }
+
+    function checkSingleQuestionFeedback(qId) {
+      const q = QUESTION_BANK.find(function (item) { return item.id === qId; });
+      if (!q) return;
+
+      const userAns = userAnswers[q.id];
+      const correctOpt = q.options.find(function (o) { return o.correct; });
+      const isCorrect = userAns && correctOpt && userAns === correctOpt.letter;
+
+      const card = document.getElementById(`q-card-${q.id}`);
+      const feedbackBox = document.getElementById(`feedback-${q.id}`);
+      const feedbackBadge = document.getElementById(`feedback-badge-${q.id}`);
+
+      if (card) {
+        card.classList.remove('correct-review', 'incorrect-review');
+        card.classList.add(isCorrect ? 'correct-review' : 'incorrect-review');
+      }
+
+      if (feedbackBox) {
+        feedbackBox.classList.add('visible');
+      }
+
+      if (feedbackBadge) {
+        if (isCorrect) {
+          feedbackBadge.className = 'feedback-badge correct';
+          feedbackBadge.innerHTML = `<i data-lucide="check" style="width:14px;height:14px;"></i><span>CORRECTO — ${q.normCitation}</span>`;
+        } else {
+          const correctLetter = correctOpt ? correctOpt.letter : '';
+          feedbackBadge.className = 'feedback-badge incorrect';
+          feedbackBadge.innerHTML = `<i data-lucide="x" style="width:14px;height:14px;"></i><span>RESPUESTA CORRECTA: [${correctLetter}] — ${q.normCitation}</span>`;
+        }
+      }
+
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+      }
+    }
+
+    function recomputeScoresOnly() {
+      const total = QUESTION_BANK.length;
+      let totalHits = 0;
+      let modStats = {
+        gtc: { total: 0, hits: 0 },
+        retie: { total: 0, hits: 0 },
+        alturas: { total: 0, hits: 0 },
+        bio: { total: 0, hits: 0 }
+      };
+
+      QUESTION_BANK.forEach(function (q) {
+        modStats[q.module].total++;
+        const userAns = userAnswers[q.id];
+        const correctOpt = q.options.find(function (o) { return o.correct; });
+        if (userAns && correctOpt && userAns === correctOpt.letter) {
+          totalHits++;
+          modStats[q.module].hits++;
+        }
+      });
+
+      const pct = Math.round((totalHits / total) * 100);
+      const isApproved = pct >= 80;
+
+      const resScoreNum = document.getElementById('res-score-num');
+      const resCorrectCount = document.getElementById('res-correct-count');
+      const resStateBadge = document.getElementById('res-state-badge');
+
+      if (resScoreNum) resScoreNum.textContent = `${pct}%`;
+      if (resCorrectCount) resCorrectCount.textContent = `${totalHits} de ${total} correctas`;
+      if (resStateBadge) {
+        resStateBadge.textContent = isApproved ? 'APROBADO' : 'REQUIERE REFUERZO';
+        resStateBadge.className = isApproved ? 'score-state-badge passed' : 'score-state-badge failed';
+      }
+
+      updateModStatDOM('gtc', modStats.gtc.hits, modStats.gtc.total);
+      updateModStatDOM('retie', modStats.retie.hits, modStats.retie.total);
+      updateModStatDOM('alturas', modStats.alturas.hits, modStats.alturas.total);
+      updateModStatDOM('bio', modStats.bio.hits, modStats.bio.total);
+
+      updateCertificateData(totalHits, total, pct, isApproved, modStats);
+    }
+
+    function updateModStatDOM(key, hits, total) {
+      const statElem = document.getElementById(`stat-${key}`);
+      const fillElem = document.getElementById(`fill-stat-${key}`);
+      const pct = total > 0 ? Math.round((hits / total) * 100) : 0;
+
+      if (statElem) statElem.textContent = `${hits} / ${total} (${pct}%)`;
+      if (fillElem) fillElem.style.width = `${pct}%`;
+    }
+
+    function toggleAllFeedbacks() {
+      showingAllFeedback = !showingAllFeedback;
+      const boxes = document.querySelectorAll('.feedback-box');
+      boxes.forEach(function (b) {
+        if (showingAllFeedback) {
+          b.classList.add('visible');
+        } else {
+          b.classList.remove('visible');
+        }
+      });
+
+      const btnText = document.getElementById('btn-toggle-feedback-text');
+      if (btnText) {
+        btnText.textContent = showingAllFeedback
+          ? 'Ocultar Explicaciones Normativas'
+          : 'Ver Todas las Respuestas y Explicaciones';
+      }
+    }
+
+    function resetQuiz() {
+      if (confirm('¿Está seguro de reiniciar todas las respuestas del cuestionario?')) {
+        userAnswers = {};
+        quizSubmitted = false;
+        showingAllFeedback = false;
+
+        const cards = document.querySelectorAll('.question-card');
+        cards.forEach(function (card) {
+          card.classList.remove('answered', 'correct-review', 'incorrect-review');
+        });
+
+        const labels = document.querySelectorAll('.option-label');
+        labels.forEach(function (lbl) {
+          lbl.classList.remove('selected');
+        });
+
+        const radios = document.querySelectorAll('.option-radio');
+        radios.forEach(function (r) {
+          r.checked = false;
+        });
+
+        const feedbacks = document.querySelectorAll('.feedback-box');
+        feedbacks.forEach(function (f) {
+          f.classList.remove('visible');
+        });
+
+        const resPanel = document.getElementById('results-panel');
+        if (resPanel) resPanel.style.display = 'none';
+
+        filterQuestions('all');
+        updateProgressDisplay();
+        persistAppState();
+      }
+    }
+
+    /* ==========================================================================
+       GTC 45 MATRIX CALCULATOR LOGIC
+       ========================================================================== */
+    function setCalcParam(param, val) {
+      calcState[param] = Number(val);
+
+      // Update button selection visual in DOM
+      const group = document.getElementById(`${param}-buttons`);
+      if (group) {
+        const btns = group.querySelectorAll('.calc-choice-btn');
+        btns.forEach(function (btn) {
+          if (Number(btn.getAttribute('data-val')) === Number(val)) {
+            btn.classList.add('selected');
+          } else {
+            btn.classList.remove('selected');
+          }
+        });
+      }
+
+      updateCalculator();
+      persistAppState();
+    }
+
+    function updateCalculator() {
+      const nd = calcState.nd;
+      const ne = calcState.ne;
+      const nc = calcState.nc;
+
+      // Update headers
+      const ndDisp = document.getElementById('nd-val-disp');
+      const neDisp = document.getElementById('ne-val-disp');
+      const ncDisp = document.getElementById('nc-val-disp');
+
+      if (ndDisp) ndDisp.textContent = `ND = ${nd} (${getNdLabel(nd)})`;
+      if (neDisp) neDisp.textContent = `NE = ${ne} (${getNeLabel(ne)})`;
+      if (ncDisp) ncDisp.textContent = `NC = ${nc} (${getNcLabel(nc)})`;
+
+      // Math: NP = ND * NE
+      const np = nd * ne;
+      // Math: NR = NP * NC
+      const nr = np * nc;
+
+      const npVal = document.getElementById('calc-np-val');
+      const npText = document.getElementById('calc-np-text');
+      const nrVal = document.getElementById('calc-nr-val');
+      const nrRange = document.getElementById('calc-nr-range');
+
+      if (npVal) npVal.textContent = np;
+      if (npText) npText.textContent = getNpCategory(np);
+      if (nrVal) nrVal.textContent = nr;
+
+      // Classify NR level and acceptability
+      let levelText = 'NIVEL I';
+      let acceptText = 'NO ACEPTABLE';
+      let colorToken = 'var(--error)';
+      let meaningText = 'Situación crítica. Requiere suspensión inmediata de la actividad de trabajo o intervención urgente antes de reanudar operaciones.';
+      let controls = [
+        '<strong>Eliminación / Sustitución:</strong> Desenergizar fuentes o cancelar maniobra.',
+        '<strong>Ingeniería:</strong> Enclavamiento LOTO y apantallamiento de barras.',
+        '<strong>Administrativo:</strong> Permiso de trabajo en alturas/eléctrico y ATS en sitio.',
+        '<strong>EPP:</strong> Dotación ignífuga contra Arc Flash y guantes dieléctricos certificados.'
+      ];
+
+      if (nr >= 600) {
+        levelText = 'NIVEL I';
+        acceptText = 'NO ACEPTABLE';
+        colorToken = 'var(--error)';
+        meaningText = 'Situación crítica. Se exige suspender inmediatamente las actividades hasta que el riesgo esté bajo control. Intervención urgente y prioritaria.';
+        if (nrRange) nrRange.textContent = 'Rango I: 600 - 4000';
+      } else if (nr >= 150) {
+        levelText = 'NIVEL II';
+        acceptText = 'NO ACEPTABLE O ACEPTABLE CON CONTROL';
+        colorToken = 'var(--warning)';
+        meaningText = 'Corregir y adoptar medidas de control de inmediato. Se requiere permiso especial y verificación por el Coordinador SST.';
+        if (nrRange) nrRange.textContent = 'Rango II: 150 - 500';
+        controls = [
+          '<strong>Ingeniería:</strong> Líneas de vida fijas o delimitación perimetral rígida.',
+          '<strong>Administrativo:</strong> Procedimiento de trabajo seguro documentado y divulgación previa.',
+          '<strong>EPP:</strong> Arnés de cuerpo entero de 4 argollas con eslinga y absorvedor de impacto.'
+        ];
+      } else if (nr >= 40) {
+        levelText = 'NIVEL III';
+        acceptText = 'MEJORABLE';
+        colorToken = 'var(--tertiary)';
+        meaningText = 'Mejorar si es posible. Sería conveniente justificar la intervención y su rentabilidad técnica.';
+        if (nrRange) nrRange.textContent = 'Rango III: 40 - 120';
+        controls = [
+          '<strong>Administrativo:</strong> Pausas activas programadas y rotación de personal bajo sombra.',
+          '<strong>Capacitación:</strong> Reentrenamiento periódico en ergonomía y uso de EPP.',
+          '<strong>EPP:</strong> Protección solar UV factor UPF 50+, sombrero legionario y gafas polarizadas.'
+        ];
+      } else {
+        levelText = 'NIVEL IV';
+        acceptText = 'ACEPTABLE';
+        colorToken = 'var(--positive)';
+        meaningText = 'Mantener las medidas de control existentes. Se deben hacer comprobaciones periódicas para asegurar que el riesgo no aumente.';
+        if (nrRange) nrRange.textContent = 'Rango IV: ≤ 20';
+        controls = [
+          '<strong>Control Operativo:</strong> Mantener inspecciones pre-operacionales de rutina.',
+          '<strong>EPP Estándar:</strong> Casco con barbuquejo, botas dieléctricas y gafas de seguridad.'
+        ];
+      }
+
+      const badge = document.getElementById('calc-level-badge');
+      const accept = document.getElementById('calc-accept-text');
+      const meaning = document.getElementById('calc-meaning-text');
+      const nrValElem = document.getElementById('calc-nr-val');
+      const controlsList = document.getElementById('calc-controls-list');
+
+      if (badge) {
+        badge.textContent = levelText;
+        badge.style.background = colorToken;
+      }
+      if (accept) {
+        accept.textContent = acceptText;
+        accept.style.color = colorToken;
+      }
+      if (meaning) {
+        meaning.textContent = meaningText;
+      }
+      if (nrValElem) {
+        nrValElem.style.color = colorToken;
+      }
+      if (controlsList) {
+        controlsList.innerHTML = controls.map(function (c) {
+          return `<li>${c}</li>`;
+        }).join('');
+      }
+    }
+
+    function getNdLabel(nd) {
+      if (nd === 10) return 'Muy Alto';
+      if (nd === 6) return 'Alto';
+      if (nd === 2) return 'Medio';
+      return 'Bajo';
+    }
+
+    function getNeLabel(ne) {
+      if (ne === 4) return 'Continua';
+      if (ne === 3) return 'Frecuente';
+      if (ne === 2) return 'Ocasional';
+      return 'Esporádica';
+    }
+
+    function getNcLabel(nc) {
+      if (nc === 100) return 'Mortal o Catastrófico';
+      if (nc === 60) return 'Muy Grave';
+      if (nc === 25) return 'Grave';
+      return 'Leve';
+    }
+
+    function getNpCategory(np) {
+      if (np >= 24) return 'MUY ALTO (40 - 24)';
+      if (np >= 10) return 'ALTO (20 - 10)';
+      if (np >= 6) return 'MEDIO (8 - 6)';
+      return 'BAJO (4 - 2)';
+    }
+
+    function loadCalcPreset(type) {
+      if (type === 'cubierta') {
+        setCalcParam('nd', 10);
+        setCalcParam('ne', 4);
+        setCalcParam('nc', 100);
+      } else if (type === 'strings') {
+        setCalcParam('nd', 6);
+        setCalcParam('ne', 3);
+        setCalcParam('nc', 60);
+      } else if (type === 'inversor') {
+        setCalcParam('nd', 6);
+        setCalcParam('ne', 2);
+        setCalcParam('nc', 25);
+      } else if (type === 'termografia') {
+        setCalcParam('nd', 0);
+        setCalcParam('ne', 2);
+        setCalcParam('nc', 10);
+      } else if (type === 'limpieza') {
+        setCalcParam('nd', 2);
+        setCalcParam('ne', 3);
+        setCalcParam('nc', 10);
+      }
+    }
+
+    /* ==========================================================================
+       WORKER CREDENTIALS & CERTIFICATE SYNC
+       ========================================================================== */
+    function saveAndSyncData() {
+      syncWorkerDataToCert();
+      persistAppState();
+    }
+
+    function syncWorkerDataToCert() {
+      const nameInput = document.getElementById('worker-name');
+      const idInput = document.getElementById('worker-id');
+      const roleInput = document.getElementById('worker-role');
+      const projInput = document.getElementById('worker-project');
+      const dateInput = document.getElementById('eval-date');
+
+      const name = (nameInput && nameInput.value.trim()) || 'Carlos Eduardo Mendoza Gómez';
+      const id = (idInput && idInput.value.trim()) || '1.098.765.432';
+      const role = (roleInput && roleInput.value.trim()) || 'Técnico Electricista Solar Fotovoltaico';
+      const proj = (projInput && projInput.value.trim()) || 'Parque Solar Fotovoltaico INVEA I';
+      const date = (dateInput && dateInput.value) || '2026-11-04';
+
+      const certName = document.getElementById('cert-worker-name');
+      const certId = document.getElementById('cert-worker-id');
+      const certRole = document.getElementById('cert-worker-role');
+      const certProj = document.getElementById('cert-worker-project');
+      const certDate = document.getElementById('cert-eval-date');
+      const sigName = document.getElementById('sig-worker-name');
+      const sigId = document.getElementById('sig-worker-id');
+      const sigDisp = document.getElementById('sig-worker-disp');
+
+      if (certName) certName.textContent = name;
+      if (certId) certId.textContent = id;
+      if (certRole) certRole.textContent = role;
+      if (certProj) certProj.textContent = proj;
+      if (certDate) certDate.textContent = date;
+      if (sigName) sigName.textContent = name;
+      if (sigId) sigId.textContent = `C.C. ${id}`;
+      if (sigDisp) sigDisp.textContent = name;
+    }
+
+    function updateCertificateData(hits, total, pct, isApproved, modStats) {
+      const cGtcHits = document.getElementById('cert-score-gtc-hits');
+      const cGtcPct = document.getElementById('cert-score-gtc-pct');
+      const cRetieHits = document.getElementById('cert-score-retie-hits');
+      const cRetiePct = document.getElementById('cert-score-retie-pct');
+      const cAltHits = document.getElementById('cert-score-alt-hits');
+      const cAltPct = document.getElementById('cert-score-alt-pct');
+      const cBioHits = document.getElementById('cert-score-bio-hits');
+      const cBioPct = document.getElementById('cert-score-bio-pct');
+
+      const cTotalHits = document.getElementById('cert-score-total-hits');
+      const cTotalPct = document.getElementById('cert-score-total-pct');
+      const cStatus = document.getElementById('cert-score-global-status');
+
+      if (cGtcHits) cGtcHits.textContent = modStats.gtc.hits;
+      if (cGtcPct) cGtcPct.textContent = `${Math.round((modStats.gtc.hits / modStats.gtc.total) * 100)}%`;
+
+      if (cRetieHits) cRetieHits.textContent = modStats.retie.hits;
+      if (cRetiePct) cRetiePct.textContent = `${Math.round((modStats.retie.hits / modStats.retie.total) * 100)}%`;
+
+      if (cAltHits) cAltHits.textContent = modStats.alturas.hits;
+      if (cAltPct) cAltPct.textContent = `${Math.round((modStats.alturas.hits / modStats.alturas.total) * 100)}%`;
+
+      if (cBioHits) cBioHits.textContent = modStats.bio.hits;
+      if (cBioPct) cBioPct.textContent = `${Math.round((modStats.bio.hits / modStats.bio.total) * 100)}%`;
+
+      if (cTotalHits) cTotalHits.textContent = hits;
+      if (cTotalPct) cTotalPct.textContent = `${pct}%`;
+
+      if (cStatus) {
+        cStatus.innerHTML = isApproved
+          ? '<span style="color:var(--positive); font-weight:900;">APROBADO</span>'
+          : '<span style="color:var(--error); font-weight:900;">NO APROBADO (REQUIERE REFUERZO)</span>';
+      }
+    }
+
+    /* ==========================================================================
+       TAB NAVIGATION
+       ========================================================================== */
+    function switchMainTab(targetTabId) {
+      const tabs = ['tab-quiz', 'tab-calc', 'tab-retie', 'tab-cert'];
+      tabs.forEach(function (tabId) {
+        const panel = document.getElementById(tabId);
+        const btn = document.getElementById(`btn-${tabId}`);
+        if (panel) {
+          panel.classList.remove('active');
+          panel.style.display = 'none';
+        }
+        if (btn) {
+          btn.classList.remove('active');
+          btn.setAttribute('aria-selected', 'false');
+        }
+      });
+
+      const activePanel = document.getElementById(targetTabId);
+      const activeBtn = document.getElementById(`btn-${targetTabId}`);
+      if (activePanel) {
+        activePanel.classList.add('active');
+        activePanel.style.display = 'block';
+      }
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+        activeBtn.setAttribute('aria-selected', 'true');
+      }
+
+      if (targetTabId === 'tab-cert') {
+        syncWorkerDataToCert();
+        if (!quizSubmitted) {
+          recomputeScoresOnly();
+        }
+      }
+
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* ==========================================================================
+       FILE EXPORT VIA SHIM
+       ========================================================================== */
+    function exportDataReport() {
+      syncWorkerDataToCert();
+
+      const name = document.getElementById('worker-name')?.value || 'Carlos Eduardo Mendoza';
+      const id = document.getElementById('worker-id')?.value || '1098765432';
+      const role = document.getElementById('worker-role')?.value || 'Técnico Solar';
+      const proj = document.getElementById('worker-project')?.value || 'Planta Solar INVEA';
+      const date = document.getElementById('eval-date')?.value || '2026-11-04';
+
+      let totalHits = 0;
+      QUESTION_BANK.forEach(function (q) {
+        const userAns = userAnswers[q.id];
+        const correctOpt = q.options.find(function (o) { return o.correct; });
+        if (userAns && correctOpt && userAns === correctOpt.letter) {
+          totalHits++;
+        }
+      });
+      const pct = Math.round((totalHits / QUESTION_BANK.length) * 100);
+      const isApproved = pct >= 80;
+
+      const reportText = [
+        '=================================================================',
+        'INVEA S.A.S. - NIT 900519295-1',
+        'SISTEMA DE GESTIÓN DE SEGURIDAD Y SALUD EN EL TRABAJO (SG-SST)',
+        'ACTA INDIVIDUAL DE EVALUACIÓN Y COMPETENCIA EN SST',
+        'Normativa: GTC 45:2012 | RETIE 2024 (Art. 1.5.1.4) | Res. 4272/2021',
+        '=================================================================',
+        '',
+        `FECHA: ${date}`,
+        `TRABAJADOR EVALUADO: ${name}`,
+        `CÉDULA DE CIUDADANÍA: ${id}`,
+        `CARGO / PUESTO: ${role}`,
+        `PROYECTO / PARQUE SOLAR: ${proj}`,
+        '',
+        '-----------------------------------------------------------------',
+        'RESULTADOS DE LA EVALUACIÓN',
+        '-----------------------------------------------------------------',
+        `PUNTAJE OBTENIDO: ${pct}% (${totalHits} / 15 aciertos)`,
+        `ESTADO: ${isApproved ? 'APROBADO (HABILITADO PARA LABORES EN CAMPO)' : 'NO APROBADO (REQUIERE REFUERZO PREVIO)'}`,
+        `UMBRAL MÍNIMO EXIGIDO: 80% (12 / 15)`,
+        '',
+        '-----------------------------------------------------------------',
+        'RESPONSABLE Y COORDINADOR SG-SST DESIGNADO',
+        '-----------------------------------------------------------------',
+        'NOMBRE: Jhoan Alexander Florez Beltran',
+        'PERFIL: Profesional en Admon SST',
+        'LICENCIA SST: 2026060907804',
+        'EMPRESA: INVEA S.A.S.',
+        '',
+        'DECLARACIÓN LEGAL:',
+        'El evaluado certifica haber recibido capacitación en la matriz de',
+        'peligros GTC 45, las 5 Reglas de Oro RETIE para trabajos sin tensión',
+        'y las medidas de protección y rescate contra caídas según Res. 4272.',
+        'Documento registrado para efectos de auditoría SG-SST (Dec. 1072/2015).',
+        '================================================================='
+      ].join('\n');
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.triggerFileDownload === 'function') {
+        try {
+          window.notebookAppApi.triggerFileDownload({
+            content: reportText,
+            contentType: 'text/plain;charset=utf-8',
+            encoding: 'utf-8',
+            filename: `INVEA_SST_Evaluacion_${id.replace(/\./g, '')}.txt`
+          });
+          return;
+        } catch (e) {
+          console.warn('triggerFileDownload fallback to local blob:', e);
+        }
+      }
+
+      // Browser download fallback
+      const blob = new Blob([reportText], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `INVEA_SST_Evaluacion_${id.replace(/\./g, '')}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    /* ==========================================================================
+       STATE PERSISTENCE VIA SHIM
+       ========================================================================== */
+    async function persistAppState() {
+      if (!window.notebookAppApi || typeof window.notebookAppApi.setAppState !== 'function') {
+        return;
+      }
+
+      const nameInput = document.getElementById('worker-name');
+      const idInput = document.getElementById('worker-id');
+      const roleInput = document.getElementById('worker-role');
+      const projInput = document.getElementById('worker-project');
+      const dateInput = document.getElementById('eval-date');
+
+      const payload = {
+        userAnswers: userAnswers,
+        quizSubmitted: quizSubmitted,
+        showingAllFeedback: showingAllFeedback,
+        calcState: calcState,
+        worker: {
+          name: nameInput ? nameInput.value : '',
+          id: idInput ? idInput.value : '',
+          role: roleInput ? roleInput.value : '',
+          project: projInput ? projInput.value : '',
+          date: dateInput ? dateInput.value : ''
+        }
+      };
+
+      try {
+        await window.notebookAppApi.setAppState(payload);
+      } catch (err) {
+        console.warn('Error al guardar estado de la aplicación:', err);
+      }
+    }
+
+    async function restoreAppState() {
+      if (!window.notebookAppApi || typeof window.notebookAppApi.getAppState !== 'function') {
+        return;
+      }
+
+      try {
+        const state = await window.notebookAppApi.getAppState();
+        if (!state) return;
+
+        if (state.worker) {
+          const nameInput = document.getElementById('worker-name');
+          const idInput = document.getElementById('worker-id');
+          const roleInput = document.getElementById('worker-role');
+          const projInput = document.getElementById('worker-project');
+          const dateInput = document.getElementById('eval-date');
+
+          if (nameInput && state.worker.name) nameInput.value = state.worker.name;
+          if (idInput && state.worker.id) idInput.value = state.worker.id;
+          if (roleInput && state.worker.role) roleInput.value = state.worker.role;
+          if (projInput && state.worker.project) projInput.value = state.worker.project;
+          if (dateInput && state.worker.date) dateInput.value = state.worker.date;
+        }
+
+        if (state.calcState) {
+          calcState = state.calcState;
+          setCalcParam('nd', calcState.nd);
+          setCalcParam('ne', calcState.ne);
+          setCalcParam('nc', calcState.nc);
+        }
+
+        if (state.userAnswers && typeof state.userAnswers === 'object') {
+          userAnswers = state.userAnswers;
+          // Re-render questions with answers
+          renderQuestions();
+        }
+
+        if (state.quizSubmitted) {
+          evaluateQuiz();
+        }
+      } catch (err) {
+        console.warn('Error al restaurar estado de la aplicación:', err);
+      }
+    }
+  </script>
+</body>
+</html>
